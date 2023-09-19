@@ -1,0 +1,20 @@
+project: default
+apps:
+- appId: checkout
+  port: 0
+  env:
+    DAPR_API_TOKEN: diagrid://v1/7f40de76-9763-4630-b2f2-744a6f14ce99/8725/default/checkout/43d10d29-28f6-440d-b034-71b568e9428c
+    DAPR_APP_ID: checkout
+    DAPR_GRPC_ENDPOINT: https://grpc-prj8725.api.cloud.diagrid.io
+    DAPR_HTTP_ENDPOINT: https://http-prj8725.api.cloud.diagrid.io
+  workDir: "checkout"
+  command: ["java -jar target/CheckoutService-0.0.1-SNAPSHOT.jar --server.port=8282"]
+- appId: order-processor
+  port: 8080
+  env:
+    DAPR_API_TOKEN: diagrid://v1/7f40de76-9763-4630-b2f2-744a6f14ce99/8725/default/order-processor/ad23647b-0a51-4a3f-80e8-bee0d30d14a0
+    DAPR_APP_ID: order-processor
+    DAPR_GRPC_ENDPOINT: https://grpc-prj8725.api.cloud.diagrid.io
+    DAPR_HTTP_ENDPOINT: https://http-prj8725.api.cloud.diagrid.io
+  workDir: "order-processor"
+  command: ["java -jar target/OrderProcessingService-0.0.1-SNAPSHOT.jar"]
