@@ -128,10 +128,10 @@ Optionally, you can interact directly with CRA APIs and verify the orders are sa
 ```bash
 diagrid test kv get 1 --connection kvstore --app-id order-processor -o json 
 
-diagrid test publish post --connection pubsub --data '{"title": "foo", "body": "bar", "userId": 1}' --app-id checkout
+diagrid test publish post --connection pubsub --data '{"orderId":100}' --app-id checkout
 ```
 
-{"orderId":2}'
+
 
 ## Cleanup
 Stop the local applications:
