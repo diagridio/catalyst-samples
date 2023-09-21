@@ -1,24 +1,23 @@
 # Quickstart: PubSub in Java
 
 This guide demonstrates how to set up and run a Java pubsub application using Diagrid CRA. The project consists of `checkout` (publisher) and `order-processor` (consumer) services, along with a managed pubsub broker.
+ 
 
-## Table of Contents
+# Table of Contents
 
-- [Quickstart: PubSub in Java](#quickstart-pubsub-in-java)
-- [Prerequisites](#prerequisites)
-- [Install Diagrid CLI](#install-diagrid-cli)
-- [Login and Setup Project](#login-and-setup-project)
-- [Clone and Build the Java Applications](#clone-and-build-the-java-applications)
-- [Setup Remote AppIds in CRA](#setup-remote-appids-in-cra)
-- [Local Application Setup](#local-application-setup)
-- [Run Applications](#run-applications)
-- [Subscribe the Consumer Application to a Topic](#subscribe-the-consumer-application-to-a-topic)
-- [Monitor CRA API Logs](#monitor-cra-api-logs)
-- [Interact with CRA APIs](#interact-with-cra-apis)
-- [Cleanup](#cleanup)
-- [Clean Up Cloud Resources](#clean-up-cloud-resources)
-
----
+1. [Prerequisites](#prerequisites)
+2. [Install Diagrid CLI](#install-diagrid-cli)
+3. [Login and Setup Project](#login-and-setup-project)
+4. [Clone and Build the Java Applications](#clone-and-build-the-java-applications)
+5. [Setup Remote AppIds in CRA](#setup-remote-appids-in-cra)
+6. [Local Application Setup](#local-application-setup)
+7. [Run Applications](#run-applications)
+8. [Subscribe the Consumer Application to a Topic](#subscribe-the-consumer-application-to-a-topic)
+9. [Monitor CRA API Logs](#monitor-cra-api-logs)
+10. [Interact with CRA APIs](#interact-with-cra-apis)
+11. [Stop Local Applications](#stop-local-applications)
+12. [Clean Up Cloud Resources](#clean-up-cloud-resources)
+ 
 
 ## Prerequisites
 Before diving in, ensure you have the following:
@@ -148,7 +147,7 @@ diagrid test kv get 1 --connection kvstore --app-id order-processor -o json
 
 The first command simulates the `checkout` service by publishing a new order. The second retrieves this order from the Key/Value store.
 
-## Cleanup
+## Stop Local Applications
 
 After testing and validating your applications, it's a good practice to clean up and release resources.
 
@@ -158,8 +157,8 @@ To stop the local applications, use:
 diagrid dev stop
 ```
 
-Executing this command performs the following actions:
-- 
+Executing this command performs the following actions: 
+
 - **Connection Termination**: Any active network tunnels or incoming connections established by the Diagrid CLI for your applications are terminated. This ensures there are no lingering connections that might interfere with subsequent operations.
 
 - **Local Application Termination**: It gracefully shuts down the local applications that were started using the Diagrid CLI.
