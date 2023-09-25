@@ -38,6 +38,9 @@ curl -o- https://downloads.stg.diagrid.io/cli/install-cra.sh | bash
 ```
 
 ## Login and Setup Project
+
+Before diving into the setup, check if you already have a project created in Diagrid CRA. If there's no existing project, you'll need to create a new one named "quickstarts". If you already have a project, ensure that it's equipped with the default managed services, specifically a pubsub broker and a kvstore.
+
 Authenticate with your Diagrid account and create a new project:
 
 ```bash
@@ -53,7 +56,7 @@ Clone the quickstart repository and navigate:
 
 ```bash
 git clone git@github.com:diagridio/cra-quickstarts.git
-cd pub_sub/java
+cd cra-quickstarts/pub_sub/java
 ```
 
 Build the Java applications:
@@ -141,8 +144,8 @@ These commands stream logs for the `checkout` and `order-processor` appIds, prov
 For direct interaction with CRA APIs, you can use the following commands:
 
 ```bash
-diagrid test publish post --connection pubsub --data '{"orderId":100}' --app-id checkout
-diagrid test kv get 1 --connection kvstore --app-id order-processor -o json 
+diagrid test publish orders --connection pubsub --data '{"orderId":999}' --app-id checkout
+diagrid test kv get 999 --connection kvstore --app-id order-processor -o json 
 ```
 
 The first command simulates the `checkout` service by publishing a new order. The second retrieves this order from the Key/Value store.
