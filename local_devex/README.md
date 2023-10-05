@@ -11,8 +11,6 @@ Before diving in, ensure you have the following:
 - Git client
 - Curl
 
----
-
 ## Install Diagrid CLI
 To begin, install the Diagrid CLI:
 

@@ -28,8 +28,6 @@ Before diving in, ensure you have the following:
 - Git client
 - Curl
 
----
-
 ## Install Diagrid CLI
 To begin, install the Diagrid CLI:
 
@@ -79,12 +77,7 @@ Create two remote appIds:
 diagrid appid create checkout
 diagrid appid create order-processor
 ```
-An appId in CRA serves as the remote identity of an application. It functions as the single point of contact for all interactions between the application and CRA.
-
 An appId in CRA serves as the remote identity of a local application. It ensures that the application can seamlessly interact with CRA services, receive messages, and handle requests. Essentially, the appId functions as the single point of contact for all interactions between the application and CRA, providing a unique identity for the application.
-Certainly! Here's the extended section:
-
----
 
 ## Local Application Setup
 To ensure local applications communicate with their `appId`s, specific environment variables are needed. The Diagrid CLI can generate a configuration file with these details.
@@ -116,8 +109,6 @@ This command does the following:
 - **Log Streaming**: The command also streams application logs directly to your terminal, providing real-time feedback.
 
 This command offers a seamless bridge between local development and the Diagrid CRA platform.
-
----
  
 ## Subscribe the Consumer Application to a Topic
 
