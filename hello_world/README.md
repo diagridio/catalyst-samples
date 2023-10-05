@@ -102,7 +102,7 @@ diagrid pubsub create pubsub
 With the broker in place, the next step is to subscribe the consumer appId to the `orders` topic:
 
 ```bash
-diagrid subscription create orders-consumer --connection pubsub --topic orders --route /orders --scopes consumer
+diagrid subscription create pubsub-consumer --connection pubsub --topic orders --route /orders --scopes consumer
 ```
 
 This command ensures that all messages directed to the `orders` topic are routed to the `/orders` endpoint of the consumer application.
@@ -110,7 +110,7 @@ This command ensures that all messages directed to the `orders` topic are routed
 To simulate the consumer's behavior, we'll use the Diagrid CLI:
 
 ```bash
-diagrid listen --app-id consumer --subscription orders-consumer
+diagrid listen --app-id consumer --subscription pubsub-consumer
 ```
 
 This blocking command acts as a local consumer application, logging incoming messages from the specified subscription.
@@ -144,7 +144,7 @@ diagrid appid delete consumer
 diagrid subscription delete pubsub-consumer
 ```
 
-By executing these commands, the `publisher`, `consumer` appIds, and `orders-consumer` subscription will be removed from the Diagrid CRA platform. However, other resources associated with the project, like the managed pubsub broker or key/value store, will remain intact.
+By executing these commands, the `publisher`, `consumer` appIds, and `pubsub-consumer` subscription will be removed from the Diagrid CRA platform. However, other resources associated with the project, like the managed pubsub broker or key/value store, will remain intact.
 
 - **Delete the Entire Project**: If you wish to remove all resources associated with the `quickstarts` project, including appIds, managed services, and configurations, you can delete the entire project:
 
