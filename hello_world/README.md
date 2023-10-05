@@ -48,7 +48,7 @@ An appId acts as the digital twin for an application in CRA, serving as the prim
 
 To illustrate synchronous communication between two applications, we'll use the Diagrid CLI. This tool can initiate calls to appIds and handle incoming calls.
 
-![Request/Reply architecture](request:reply.png)
+![Request/Reply architecture](request-reply.png)
 
 Start by setting up the receiver (consumer):
 
@@ -81,8 +81,6 @@ In our demonstration, the call journeyed from the publisher, through the CRA API
 - **Reliability**: Built-in resiliency policies ensure robust communication.
 - **Security**: Enforce authentication and authorization for secure interactions.
 - **Observability**: Access metrics, logs, and a visual topology view.
-
-
 
 ## Demonstrating Asynchronous Communication with Pub/Sub
 
@@ -129,6 +127,8 @@ This command, representing the publisher's action, sends a message to the `order
 
 For experimentation, you can modify the `orderId` value and dispatch multiple messages. The consumer, running in the other terminal, should promptly log these incoming messages.
 
+## Advantages of Using CRA's Pub/Sub API
+TODO
 
 ## Next steps
 This tutorial demonstrates the fastest way to interact with CRA APIs. As a next step, you can run real applicaiton with CRA APIs and discover the full power of Diagrid CLI in the next tutorial.
