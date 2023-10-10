@@ -1,0 +1,4 @@
+dapr
+pydantic
+grpc
+fastapi

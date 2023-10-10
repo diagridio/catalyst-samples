@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug csharp",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "publish csharp",
+      "program": "${workspaceFolder}/csharp/bin/Debug/net7.0/csharp.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/csharp",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "env": {
+        "DAPR_API_TOKEN": "",
+        "DAPR_GRPC_ENDPOINT": ""
+      },
+      "logging": {
+        "moduleLoad": false
+      }
+    },
+    {
+      "name": "Python: Module",
+      "type": "python",
+      "cwd": "${workspaceFolder}/python",
+      "env": {
+        "DAPR_API_TOKEN": "diagrid://v1/58e239cc-f716-48f2-bf5b-2a3a3154c51c/101382/quickstarts/python/de3f11da-c3db-4a5f-b9b4-b2c034d4dea6",
+        "DAPR_GRPC_ENDPOINT": "https://grpc-prj101382.api.dev.cloud.diagrid.io",
+        "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+      },
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app","--reload"],
+      "pythonArgs": ["-Xfrozen_modules=off"]
+  }
+  ]
+}
