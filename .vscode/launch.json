@@ -6,9 +6,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "publish csharp",
-      "program": "${workspaceFolder}/csharp/bin/Debug/net7.0/csharp.dll",
+      "program": "${workspaceFolder}/code-tutorials/csharp/bin/Debug/net7.0/csharp.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/csharp",
+      "cwd": "${workspaceFolder}/code-tutorials/csharp",
       "console": "internalConsole",
       "stopAtEntry": false,
       "env": {
@@ -22,10 +22,10 @@
     {
       "name": "Python: Module",
       "type": "python",
-      "cwd": "${workspaceFolder}/python",
+      "cwd": "${workspaceFolder}/code-tutorials/python",
       "env": {
-        "DAPR_API_TOKEN": "diagrid://v1/58e239cc-f716-48f2-bf5b-2a3a3154c51c/101382/quickstarts/python/de3f11da-c3db-4a5f-b9b4-b2c034d4dea6",
-        "DAPR_GRPC_ENDPOINT": "https://grpc-prj101382.api.dev.cloud.diagrid.io",
+        "DAPR_API_TOKEN": "",
+        "DAPR_GRPC_ENDPOINT": "",
         "PYDEVD_DISABLE_FILE_VALIDATION": "1"
       },
       "request": "launch",

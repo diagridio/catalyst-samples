@@ -2,3 +2,4 @@ dapr
 pydantic
 grpc
 fastapi
+httpx
