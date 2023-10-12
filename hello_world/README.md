@@ -153,4 +153,3 @@ diagrid project delete quickstarts
 ```
 
 Always double-check before executing deletion commands as they're irreversible.
- 
