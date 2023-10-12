@@ -2,9 +2,20 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Dapr.Client;
+using Dapr.Workflow;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// builder.Services.AddDaprWorkflow(options =>
+// {
+//     // Register workflow
+//     options.RegisterWorkflow<>();
+
+//     // Register workflow activity 
+//     options.RegisterActivity<>();
+// });
+
 var app = builder.Build();
 
 // Dapr will send serialized event object vs. being raw CloudEvent
@@ -139,6 +150,7 @@ app.MapDelete("/deletekv", async ([FromBody] Order order) =>
 #endregion
 
 #region Workflow API 
+
 #endregion
 
 app.Run();

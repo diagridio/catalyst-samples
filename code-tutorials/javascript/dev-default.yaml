@@ -1,0 +1,40 @@
+project: default
+apps:
+- appId: newtest
+  port: 0
+  env:
+    DAPR_API_TOKEN: diagrid://v1/04b746d3-2fd5-40a0-bbe6-92d5fb73967b/8812/default/newtest/91310499-280c-4130-a849-8ebff654fa5e
+    DAPR_APP_ID: newtest
+    DAPR_GRPC_ENDPOINT: https://grpc-prj8812.api.stg.cloud.diagrid.io
+    DAPR_HTTP_ENDPOINT: https://http-prj8812.api.stg.cloud.diagrid.io
+  workDir: newtest
+  command: []
+- appId: test
+  port: 0
+  env:
+    DAPR_API_TOKEN: diagrid://v1/04b746d3-2fd5-40a0-bbe6-92d5fb73967b/8812/default/test/c30291b8-a6e3-409c-9a8f-fc0e4b10023b
+    DAPR_APP_ID: test
+    DAPR_GRPC_ENDPOINT: https://grpc-prj8812.api.stg.cloud.diagrid.io
+    DAPR_HTTP_ENDPOINT: https://http-prj8812.api.stg.cloud.diagrid.io
+  workDir: test
+  command: []
+- appId: test2
+  port: 0
+  env:
+    DAPR_API_TOKEN: diagrid://v1/04b746d3-2fd5-40a0-bbe6-92d5fb73967b/8812/default/test2/f677590f-1e35-4ecf-89e1-f5557c32937e
+    DAPR_APP_ID: test2
+    DAPR_GRPC_ENDPOINT: https://grpc-prj8812.api.stg.cloud.diagrid.io
+    DAPR_HTTP_ENDPOINT: https://http-prj8812.api.stg.cloud.diagrid.io
+  workDir: test2
+  command: []
+- appId: test4
+  port: 0
+  env:
+    DAPR_API_TOKEN: diagrid://v1/04b746d3-2fd5-40a0-bbe6-92d5fb73967b/8812/default/test4/16451821-b690-41e8-9457-4d510b713656
+    DAPR_APP_ID: test4
+    DAPR_GRPC_ENDPOINT: https://grpc-prj8812.api.stg.cloud.diagrid.io
+    DAPR_HTTP_ENDPOINT: https://http-prj8812.api.stg.cloud.diagrid.io
+  workDir: test4
+  command: []
+appLogDestination: ""
+appIdLogDestination: ""
