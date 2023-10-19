@@ -1,0 +1,38 @@
+@workerUrl=https://orderprocessor-subscriber-cra.dapr-examples.workers.dev
+@daprApiToken=diagrid://v1/
+@statestore=statestorekv
+POST {{workerUrl}}/orders
+Content-Type: application/json
+
+{
+    "orderId": 1,
+    "time": "{{$datetime iso8601}}"
+}
+
+### Get the KV pairs
+GET {{workerUrl}}
+
+### State Management API - Create/update
+POST https://http-prj1512.api.stg.cloud.diagrid.io:443/v1.0/state/{{statestore}}
+dapr-api-token: {{daprApiToken}}
+Content-Type: application/json
+
+[
+    {
+        "key": "1",
+        "value": {"orderId": 1, "time": "{{$datetime iso8601}}"}
+    }
+]
+
+### State Management API - Bulk get
+POST https://http-prj1512.api.stg.cloud.diagrid.io:443/v1.0/state/{{statestore}}/bulk
+dapr-api-token: {{daprApiToken}}
+Content-Type: application/json
+
+{
+    "keys": ["1", "2", "3"]
+}
+
+### State Management API - Single get
+GET https://http-prj1512.api.stg.cloud.diagrid.io:443/v1.0/state/{{statestore}}/1
+dapr-api-token: {{daprApiToken}}

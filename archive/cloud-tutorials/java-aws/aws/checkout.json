@@ -1,0 +1,41 @@
+{
+    "ServiceName": "checkout",
+    "SourceConfiguration": {
+      "ImageRepository": {
+        "ImageIdentifier": "public.ecr.aws/o3d2i4j6/dapr/checkout:latest",
+        "ImageConfiguration": {
+          "RuntimeEnvironmentVariables": {
+            "DAPR_HTTP_ENDPOINT": "{DAPR_HTTP_ENDPOINT}",
+            "DAPR_GRPC_ENDPOINT": "{DAPR_GRPC_ENDPOINT}",
+            "DAPR_API_TOKEN": "{DAPR_API_TOKEN}"
+          },
+          "Port": "8080"
+        },
+        "ImageRepositoryType": "ECR_PUBLIC"
+      },
+      "AutoDeploymentsEnabled": false
+    },
+    "InstanceConfiguration": {
+      "Cpu": "512",
+      "Memory": "1024"
+    },
+    "HealthCheckConfiguration": {
+      "Protocol": "HTTP",
+      "Path": "/actuator/health",
+      "Interval": 10,
+      "Timeout": 5,
+      "HealthyThreshold": 1,
+      "UnhealthyThreshold": 5
+    },
+    "NetworkConfiguration": {
+      "EgressConfiguration": {
+        "EgressType": "DEFAULT"
+      },
+      "IngressConfiguration": {
+        "IsPubliclyAccessible": true
+      }
+    },
+    "ObservabilityConfiguration": {
+      "ObservabilityEnabled": false
+    }
+}

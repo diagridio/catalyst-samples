@@ -1,0 +1,19 @@
+{
+    "AttributeDefinitions": [
+      {
+        "AttributeName": "key",
+        "AttributeType": "S"
+      }
+    ],
+    "TableName": "orders",
+    "KeySchema": [
+      {
+        "AttributeName": "key",
+        "KeyType": "HASH"
+      }
+    ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  }
+}

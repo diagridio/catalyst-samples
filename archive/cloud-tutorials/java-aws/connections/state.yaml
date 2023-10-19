@@ -1,0 +1,16 @@
+apiVersion: cra.diagrid.io/v1beta1
+kind: Connection
+metadata:
+  name: statestore
+spec:
+  type: state.aws.dynamodb
+  version: v1
+  metadata:
+    - name: table
+      value: "orders"
+    - name: accessKey
+      value: "{AWS_ACCESS_KEY_ID}"
+    - name: secretKey
+      value: "{AWS_SECRET_ACCESS_KEY}"
+    - name: region
+      value: "us-east-1"

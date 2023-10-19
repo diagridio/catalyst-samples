@@ -1,0 +1,13 @@
+name = "order-processor-http"
+main = "src/worker.js"
+compatibility_date = "2023-06-14"
+usage_model = "bundled"
+
+
+[vars]
+STORAGE_ACCOUNT_NAME = "statestorekv"
+PUBSUB_NAME = "pubsub"
+PUBSUB_TOPIC = "orders"
+DAPR_HTTP_PORT = 443
+DAPR_HOST = "<DAPR_HOST>"
+ORDERPROCESSOR_API_TOKEN = "<ORDERPROCESSOR_API_TOKEN>"

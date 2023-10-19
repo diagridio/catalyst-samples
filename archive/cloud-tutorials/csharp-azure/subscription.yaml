@@ -1,0 +1,14 @@
+apiVersion: dapr.io/v1beta1
+kind: Subscription
+metadata:
+  name: ordersub1
+spec:
+  subscriptionSpec:
+    bulkSubscribe:
+      enabled: false
+    connectionName: asb
+    routes:
+      default: /orders
+    topic: orders
+  scopes:
+    - order-processor

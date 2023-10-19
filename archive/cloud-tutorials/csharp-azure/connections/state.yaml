@@ -1,0 +1,14 @@
+apiVersion: cra.diagrid.io/v1beta1
+kind: Connection
+metadata:
+  name: azurestorage
+spec:
+  version: v1
+  type: state.azure.blobstorage
+  metadata:
+    - name: accountKey
+      value: "{STORAGE_KEY}"
+    - name: accountName
+      value: "crastatestore"
+    - name: containerName
+      value: "orders"

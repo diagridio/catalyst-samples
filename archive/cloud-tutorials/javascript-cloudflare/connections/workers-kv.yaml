@@ -1,0 +1,21 @@
+apiVersion: cra.diagrid.io/v1beta1
+kind: Connection
+metadata:
+  name: statestorekv
+spec:
+  type: state.cloudflare.workerskv
+  version: v1
+  metadata:
+  - name: kvNamespaceID
+    value: "<YOUR_KV_ID>"
+  - name: workerName
+    value: mydaprkv
+  - name: key
+    value: |  
+      -----BEGIN PRIVATE KEY-----
+      <YOUR_PRIVATE_KEY>
+      -----END PRIVATE KEY-----   
+  - name: cfAccountID
+    value: <YOUR_CLOUDFLARE_ACCOUNT_ID>
+  - name: cfAPIToken
+    value: <YOUR_CLOUDFLARE_API_TOKEN>
