@@ -11,7 +11,7 @@ Clone the quickstart repository and navigate:
 
 ```bash
 git clone git@github.com:diagridio/cra-quickstarts.git
-cd java
+cd generic-code/java
 ```
 
 Build the Java applications:
@@ -41,12 +41,8 @@ To ensure local applications communicate with their `appId`s, specific environme
 Execute the following commands to run the application and connect to its appId
 
 ```bash
-diagrid dev start --app-id publisher "java -jar target/OrderProcessingService-0.0.1-SNAPSHOT.jar"
-diagrid dev start --app-id subscriber --app-port 9000  "java -jar target/OrderProcessingService-0.0.1-SNAPSHOT.jar --server.port=9000"
-
-
-diagrid dev start --app-id subscriber --app-port 9000 env
-
+diagrid dev start --app-id publisher "java -jar target/Main-0.0.1-SNAPSHOT.jar"
+diagrid dev start --app-id subscriber --app-port 9001  "java -jar target/Main-0.0.1-SNAPSHOT.jar --port=9001"
 ```
 diagrid dev start is a powerful command. It can run a single applicaiton as seen here, or run multiple applicaiton as we will see later. It can also open incoming connections from CRA to local ports for any ingress traffic. Publisher application acts only as message publisher and it doesn't require any incoming connections.
 

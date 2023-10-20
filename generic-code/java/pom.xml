@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.service</groupId>
-	<artifactId>OrderProcessingService</artifactId>
+	<artifactId>Main</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>OrderProcessingService</name>
-	<description>Demo for Dapr pubsub component</description>
+	<name>Main</name>
+	<description>Diagrid Catalyst Java Quickstart</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -52,7 +52,6 @@
 			<version>20211205</version>
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -67,13 +66,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
 </project>

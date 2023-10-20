@@ -9,12 +9,10 @@ import io.dapr.client.domain.HttpExtension;
 import io.dapr.client.domain.State;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import org.json.JSONObject;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +20,8 @@ import reactor.core.publisher.Mono;
 import javax.annotation.PostConstruct;
 
 @RestController
-public class OrderProcessingServiceController {
-    private static final Logger logger = LoggerFactory.getLogger(OrderProcessingServiceController.class);
+public class Controller {
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
     private DaprClient client;
 
     @PostConstruct
@@ -33,12 +31,9 @@ public class OrderProcessingServiceController {
 
     @PostMapping(path = "/request", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> request(@RequestBody(required = true) Order order) {
-        JSONObject content = new JSONObject();
-        content.put("orderId", order.getOrderId());
-
         return Mono.fromSupplier(() -> {
             try {
-                Order response = client.invokeMethod("subscriber", "reply", content, HttpExtension.POST, Order.class).block();
+                Order response = client.invokeMethod("receiver", "reply", order, HttpExtension.POST, Order.class).block();
                 logger.info("Invoke Successful. Reply received: " + response.getOrderId());
                 return ResponseEntity.ok("SUCCESS");
             } catch (Exception e) {
@@ -47,7 +42,6 @@ public class OrderProcessingServiceController {
             }
         });
     }
-
 
     @PostMapping(path = "/reply", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Order> reply(@RequestBody Order order) {
@@ -72,7 +66,6 @@ public class OrderProcessingServiceController {
         });
     }
 
-
     @PostMapping(path = "/savekv", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> saveKV(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
@@ -89,8 +82,7 @@ public class OrderProcessingServiceController {
         });
     }
 
-
-    @DeleteMapping(path = "/deletekv", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/deletekv", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> deleteKV(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
 
@@ -123,7 +115,7 @@ public class OrderProcessingServiceController {
     }
 
     @Topic(name = "orders", pubsubName = "pubsub")
-    @PostMapping(path = "/subscribe", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/consume", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> subscribe(@RequestBody(required = false) CloudEvent<Order> cloudEvent) {
         return Mono.fromSupplier(() -> {
             try {
@@ -139,6 +131,7 @@ public class OrderProcessingServiceController {
 
 @Getter
 @Setter
+@ToString
 class Order {
     private int orderId;
 }
