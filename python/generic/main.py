@@ -44,7 +44,7 @@ async def publish_messages(order: Order):
     with DaprClient() as d:
         try:
             result = d.publish_event(
-                pubsub_name='pubsub',
+                pubsub_name='testpubsub',
                 topic_name='orders',
                 data=order.model_dump_json(),
                 data_content_type='application/json',
@@ -54,6 +54,12 @@ async def publish_messages(order: Order):
             return {'success': True}
         except grpc.RpcError as err:
             print(f"ErrorCode={err.code()}")
+
+
+@app.post("/consume")
+def receive_messages(event: CloudEvent):
+    print('Message received : %s' % event.data['orderId'], flush=True)
+    return {'success': True}
 
 
 @app.post('/sendrequest')
@@ -69,6 +75,12 @@ async def send_request(order: Order):
         return {'success': True}
     except grpc.RpcError as err:
         logging.info(f"ErrorCode={err.code()}")
+
+
+@app.post("/receiverequest")
+def receive_request(order: Order):
+    logging.info('Order received : ' + order.model_dump_json, flush=True)
+    return {'success': True}
 
 
 @app.post('/savekv')

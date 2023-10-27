@@ -57,7 +57,7 @@ def receive_messages(event: CloudEvent):
 
 # logging.info('Order requested: ' + str(orderId)) logging.info('Result: ' + str(result))
 
-# @app.post('/request')
+# @app.post('/sendrequest')
 # async def send_request(order: Order):
 #     try:
 #         result = httpx.post(

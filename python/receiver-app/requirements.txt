@@ -1,5 +1,4 @@
-dapr
 pydantic
 grpc
 fastapi
-httpx
+requests

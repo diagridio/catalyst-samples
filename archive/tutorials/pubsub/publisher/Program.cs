@@ -47,7 +47,7 @@ app.MapPost("/subscribe", (Order order) =>
 #region Request/Reply API 
 
 // Invoke another service
-app.MapPost("/request", async (Order order) =>
+app.MapPost("/sendrequest", async (Order order) =>
 {
     // Publish order to Diagrid pubsub, topic: orders 
     try

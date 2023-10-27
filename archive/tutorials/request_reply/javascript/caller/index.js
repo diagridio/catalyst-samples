@@ -33,7 +33,7 @@ app.post('/subscribe', (req, res) => {
 
 //#region Request/Reply API 
 
-app.post('/request', async function (req, res) {
+app.post('/sendrequest', async function (req, res) {
   let config = {
     headers: {
         "dapr-app-id": "javascript"

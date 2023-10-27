@@ -29,22 +29,6 @@ public class Controller {
         client = new DaprClientBuilder().build();
     }
 
-    @PostMapping(path = "/publish", consumes = MediaType.ALL_VALUE)
-    public Mono<ResponseEntity> publish(@RequestBody(required = true) Order order) {
-        return Mono.fromSupplier(() -> {
-
-            // Publish an event/message using Dapr PubSub
-            try {
-                client.publishEvent("pubsub", "orders", order).block();
-                logger.info("Publish Successful. Order published: " + order.getOrderId());
-                return ResponseEntity.ok("SUCCESS");
-            } catch (Exception e) {
-                logger.error("Error occurred while publishing order: " + order.getOrderId());
-                throw new RuntimeException(e);
-            }
-        });
-    }
-
     @PostMapping(path = "/sendrequest", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> request(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
@@ -57,6 +41,12 @@ public class Controller {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    @PostMapping(path = "/reply", consumes = MediaType.ALL_VALUE)
+    public ResponseEntity<Order> reply(@RequestBody Order order) {
+        System.out.println("Request received : " + order.getOrderId());
+        return ResponseEntity.ok(order);
     }
 
     @PostMapping(path = "/getkv", consumes = MediaType.ALL_VALUE)
@@ -103,6 +93,36 @@ public class Controller {
                 return ResponseEntity.ok("SUCCESS");
             } catch (Exception e) {
                 logger.error("Error occurred while deleting order: " + order.getOrderId());
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @PostMapping(path = "/publish", consumes = MediaType.ALL_VALUE)
+    public Mono<ResponseEntity> publish(@RequestBody(required = true) Order order) {
+        return Mono.fromSupplier(() -> {
+
+            // Publish an event/message using Dapr PubSub
+            try {
+                client.publishEvent("pubsub", "orders", order).block();
+                logger.info("Publish Successful. Order published: " + order.getOrderId());
+                return ResponseEntity.ok("SUCCESS");
+            } catch (Exception e) {
+                logger.error("Error occurred while publishing order: " + order.getOrderId());
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @Topic(name = "orders", pubsubName = "pubsub")
+    @PostMapping(path = "/consume", consumes = MediaType.ALL_VALUE)
+    public Mono<ResponseEntity> subscribe(@RequestBody(required = false) CloudEvent<Order> cloudEvent) {
+        return Mono.fromSupplier(() -> {
+            try {
+                int orderId = cloudEvent.getData().getOrderId();
+                logger.info("Message received: " + orderId);
+                return ResponseEntity.ok("SUCCESS");
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });

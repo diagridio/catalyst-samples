@@ -35,6 +35,13 @@ app.MapPost("/publish", async (Order order) =>
     return Results.Ok(order);
 });
 
+// Receive messages
+app.MapPost("/subscribe", (Order order) =>
+{
+    app.Logger.LogInformation($"Message received: {order.OrderId}");
+    return Results.Ok();
+});
+
 #endregion
 
 #region Request/Reply API 
@@ -62,6 +69,13 @@ app.MapPost("/sendrequest", async (Order order) =>
         return Results.StatusCode(500);
     }
 
+    return Results.Ok(order);
+});
+
+// Receive invocation request 
+app.MapPost("/reply", (Order order) =>
+{
+    app.Logger.LogInformation("Request received : " + order);
     return Results.Ok(order);
 });
 
