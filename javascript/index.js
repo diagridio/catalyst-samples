@@ -3,11 +3,11 @@ import bodyParser from 'body-parser';
 import axios from "axios";
 import { DaprClient } from "@dapr/dapr";
 
-const port = 9000;
-const app = express()
-
 const daprApiToken = process.env.DAPR_API_TOKEN;
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT;
+const appPort = process.env.PORT || 9000; 
+
+const app = express()
 
 const client = new DaprClient({daprApiToken: daprApiToken});
 
@@ -80,4 +80,4 @@ app.post('/deletekv', async function (req, res) {
 //#endregion
 
 
-app.listen(port);
+app.listen(appPort);
