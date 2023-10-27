@@ -1,0 +1,35 @@
+### Publish/Subscribe API 
+
+POST http://localhost:5000/publish
+Content-Type: application/json
+
+{
+    "orderId": "1"
+}
+
+### Request/Reply API 
+
+POST http://localhost:5000/sendrequest
+Content-Type: application/json
+
+{
+    "orderId": "1"
+}
+
+### Save KV 
+
+POST http://localhost:5000/savekv
+Content-Type: application/json
+
+{
+    "orderId": "1"
+}
+
+### GET KV 
+
+POST http://localhost:5000/getkv
+Content-Type: application/json
+
+{
+    "orderId": "139025"
+}
