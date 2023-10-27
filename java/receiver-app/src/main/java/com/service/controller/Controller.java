@@ -1,12 +1,5 @@
 package com.service.controller;
 
-import io.dapr.Topic;
-import io.dapr.client.DaprClient;
-import io.dapr.client.DaprClientBuilder;
-import io.dapr.client.domain.CloudEvent;
-
-import io.dapr.client.domain.HttpExtension;
-import io.dapr.client.domain.State;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
