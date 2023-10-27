@@ -9,11 +9,11 @@ Content-Type: application/json
 
 ### Request/Reply API 
 
-POST http://localhost:5000/sendrequest
+POST http://localhost:5001/sendrequest
 Content-Type: application/json
 
 {
-    "orderId": "1"
+    "orderId": 1
 }
 
 ### Save KV 

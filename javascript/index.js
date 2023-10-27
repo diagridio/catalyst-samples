@@ -5,7 +5,7 @@ import { DaprClient } from "@dapr/dapr";
 
 const daprApiToken = process.env.DAPR_API_TOKEN;
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT;
-const appPort = process.env.PORT || 9000; 
+const appPort = process.env.PORT || 5000; 
 
 const app = express()
 
@@ -35,17 +35,17 @@ app.post('/consume', (req, res) => {
 app.post('/sendrequest', async function (req, res) {
   let config = {
     headers: {
-        "dapr-app-id": "target"
+        "dapr-app-id": "target",
+        "dapr-api-token": daprApiToken
     }
   };
   let order = req.body
-  const response = await axios.post(`${daprHttpEndpoint}/receiverequest`, order, config).then(res => console.log(res)).catch(err => console.log(err))
-  console.log("Published data: " + response.data.config);
-  res.status(200)
+  
+  await axios.post(`${daprHttpEndpoint}/receiverequest`, order, config).then(res => console.log("Invocation successful with status code: %d ", res.status)).catch(err => console.log(err))
 });
 
 app.post('/receiverequest', (req, res) => {
-  console.log("Invocation received: " + JSON.stringify(req.body.data))
+  console.log("Request received: %s", JSON.stringify(req.body))
   res.sendStatus(200);
 });
 
