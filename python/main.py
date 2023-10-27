@@ -5,6 +5,7 @@ from cloudevents.sdk.event import v1
 import logging
 import grpc
 import requests
+import os
 
 app = FastAPI()
 
@@ -12,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 class Order(BaseModel):
-    orderId: str
+    orderId: int
 
 
 class CloudEvent(BaseModel):
@@ -30,8 +31,7 @@ class CloudEvent(BaseModel):
 
 # Set up required inputs for http client to perform service invocation
 base_url = os.getenv('DAPR_HTTP_ENDPOINT')
-dapr_api_token = os.getenv("DAPR_API_TOKEN")
-headers = {'dapr-app-id': dapr_api_token, 'content-type': 'application/json'}
+dapr_api_token = os.getenv('DAPR_API_TOKEN')
 
 
 @app.get('/')
@@ -44,7 +44,7 @@ async def publish_messages(order: Order):
     with DaprClient() as d:
         try:
             result = d.publish_event(
-                pubsub_name='pubsub',
+                pubsub_name='testpubsub',
                 topic_name='orders',
                 data=order.model_dump_json(),
                 data_content_type='application/json',
@@ -56,19 +56,36 @@ async def publish_messages(order: Order):
             print(f"ErrorCode={err.code()}")
 
 
+@app.post("/consume")
+def receive_messages(event: CloudEvent):
+    print('Message received : %s' % event.data['orderId'], flush=True)
+    return {'success': True}
+
+
 @app.post('/sendrequest')
 async def send_request(order: Order):
+    headers = {'dapr-app-id': 'target', 'dapr-api-token': dapr_api_token, 'content-type': 'application/json'}
     try:
         result = requests.post(
-            url='%s/receivereply' % (base_url),
-            data=order.model_dump_json,
+            url='%s/receiverequest' % (base_url),
+            data=order.model_dump_json(),
             headers=headers
         )
-        logging.info('Request Successful. Order sent: %s' %
-                     order.orderId)
-        return {'success': True}
+
+        if result.ok:
+            logging.info('Invocation successful with status code: %s' % result.status_code)
+        else:
+            logging.error('Error occurred while invoking App ID: {%s' % result.reason)
+        
+        return str(order)
     except grpc.RpcError as err:
-        logging.info(f"ErrorCode={err.code()}")
+        logging.error(f"ErrorCode={err.code()}")
+
+
+@app.post("/receiverequest")
+def receive_request(order: Order):
+    logging.info('Request received : ' + str(order))
+    return str(order)
 
 
 @app.post('/savekv')

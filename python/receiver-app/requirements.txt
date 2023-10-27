@@ -1,4 +1,0 @@
-pydantic
-grpc
-fastapi
-requests

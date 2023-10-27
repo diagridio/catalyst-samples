@@ -6,11 +6,9 @@ apps:
       DAPR_APP_ID: caller
       DAPR_GRPC_ENDPOINT: https://grpc-prj115327.api.dev.cloud.diagrid.io:443
       DAPR_HTTP_ENDPOINT: https://http-prj115327.api.dev.cloud.diagrid.io
-      ASPNETCORE_URLS: http://localhost:5001
+      PORT: 5001
     workDir: .
-    command:
-      - dotnet
-      - run
+    command: ["uvicorn", "main:app", "--port", "5001"]
   - appId: target
     appPort: 5002
     env:
@@ -18,8 +16,8 @@ apps:
       DAPR_APP_ID: target
       DAPR_GRPC_ENDPOINT: https://grpc-prj115327.api.dev.cloud.diagrid.io:443
       DAPR_HTTP_ENDPOINT: https://http-prj115327.api.dev.cloud.diagrid.io
-      ASPNETCORE_URLS: http://localhost:5002
+      PORT: 5002
     workDir: .
-    command:
-      - dotnet
-      - run
+    command: ["uvicorn", "main:app", "--port", "5002"]
+appLogDestination: ""
+appIdLogDestination: ""
