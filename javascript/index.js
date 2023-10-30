@@ -9,7 +9,7 @@ const appPort = process.env.PORT || 5000;
 
 const app = express()
 
-const client = new DaprClient({daprApiToken: daprApiToken});
+const client = new DaprClient({daprHost: daprHttpEndpoint, daprPort: "443", daprApiToken: daprApiToken});
 
 app.use(bodyParser.json({ type: '*/*' })) 
 
