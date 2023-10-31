@@ -91,21 +91,21 @@ def create_kv(order: Order):
     with DaprClient() as d:
         try:
             d.save_state(store_name='kvstore',
-                         key=order.orderId, value=str(order))
+                         key=str(order.orderId), value=str(order))
             return {"success": True}
         except grpc.RpcError as err:
             print(f"Error={err.code()}")
 
 
 @app.get('/kv/orders/{orderId}')
-def get_kv(orderId: str):
+def get_kv(orderId: int):
     with DaprClient() as d:
         kv = d.get_state("kvstore", orderId)
         return kv.data
 
 
 @app.delete('/kv/orders/{orderId}')
-def delete_kv(orderId):
+def delete_kv(orderId: int):
     with DaprClient() as d:
         kv = d.delete_state("kvstore", orderId)
         return {'success': True}

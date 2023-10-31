@@ -18,7 +18,7 @@ Content-Type: application/json
 
 ### Save KV 
 
-POST http://localhost:5001/kv/orders
+POST http://localhost:5001/kv/orders/13
 Content-Type: application/json
 
 {
@@ -27,9 +27,10 @@ Content-Type: application/json
 
 ### GET KV 
 
-POST http://localhost:5001/pubsub/orders
+GET http://localhost:5001/kv/orders/13
 Content-Type: application/json
 
-{
-    "orderId": "139025"
-}
+### DELETE KV 
+
+DELETE http://localhost:5001/kv/orders/13
+Content-Type: application/json
