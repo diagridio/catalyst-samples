@@ -55,12 +55,13 @@ async def publish_orders(order: Order):
                          order.orderId)
             return {'success': True}
         except grpc.RpcError as err:
-            print(f"Error occurred while publishing order: {err.code()}")
+            logging.error(
+                f"Error occurred while publishing order: {err.code()}")
 
 
 @app.post('/pubsub/neworders')
 def consume_orders(event: CloudEvent):
-    logging.info('Order received : %s' % event.data['orderId'], flush=True)
+    logging.info('Order received : %s' % event.data['orderId'])
     return {'success': True}
 
 
