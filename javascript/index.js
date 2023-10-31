@@ -7,6 +7,7 @@ const daprApiToken = process.env.DAPR_API_TOKEN;
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT;
 const appPort = process.env.PORT || 5000; 
 const pubSubName = process.env.PUBSUB_NAME || "pubsub"; 
+const kvName = process.env.KVSTORE_NAME || "kvstore"; 
 
 const app = express()
 
@@ -77,7 +78,7 @@ app.post('/kv/orders', async function (req, res) {
     }]
 
   try {
-    await client.state.save("kvstore", state);
+    await client.state.save(kvName, state);
     console.log("Order saved successfully: " + req.body.orderId);
     res.sendStatus(200);
   } catch (error) {
@@ -89,7 +90,7 @@ app.post('/kv/orders', async function (req, res) {
 app.get('/kv/orders/:orderId', async function (req, res) {
   const keyName = "order" + req.params.orderId
   try {
-    const order = await client.state.get("kvstore", keyName)
+    const order = await client.state.get(kvName, keyName)
     console.log("Retrieved order: ", order)
     res.json(order)
   } catch (error) {
@@ -101,7 +102,7 @@ app.get('/kv/orders/:orderId', async function (req, res) {
 app.delete('/kv/orders/:orderId', async function (req, res) {
   const keyName = "order" + req.params.orderId
   try {
-    await client.state.delete("kvstore", keyName)
+    await client.state.delete(kvName, keyName)
     console.log("Deleted order: ", req.params.orderId)
     res.sendStatus(200);
   } catch (error) {

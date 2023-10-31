@@ -13,6 +13,7 @@ var client = new DaprClientBuilder().Build();
 
 var DaprApiToken = Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
 var PubSubName = Environment.GetEnvironmentVariable("PUBSUB_NAME") ?? "pubsub";
+var KVStoreName = Environment.GetEnvironmentVariable("KVSTORE_NAME") ?? "kvstore";
 
 // Dapr will send serialized event object vs. being raw CloudEvent
 app.UseCloudEvents();
@@ -94,7 +95,7 @@ app.MapPost("/kv/orders", async (Order order) =>
     // Store state in managed diagrid state store 
     try
     {
-        await client.SaveStateAsync("kvstore", order.OrderId.ToString(), order);
+        await client.SaveStateAsync(KVStoreName, order.OrderId.ToString(), order);
         app.Logger.LogInformation("Save KV Successful. Order saved: {order}", order.OrderId);
     }
     catch (Exception ex)
@@ -112,7 +113,7 @@ app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
     // Store state in managed diagrid state store 
     try
     {
-        var kv = await client.GetStateAsync<Order>("kvstore", orderId.ToString());
+        var kv = await client.GetStateAsync<Order>(KVStoreName, orderId.ToString());
         if (kv != null)
             app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", orderId.ToString());
         else
@@ -133,7 +134,7 @@ app.MapDelete("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
     // Store state in managed diagrid state store 
     try
     {
-        await client.DeleteStateAsync("kvstore", orderId.ToString());
+        await client.DeleteStateAsync(KVStoreName, orderId.ToString());
         app.Logger.LogInformation("Delete KV Successful. Order deleted: {order}", orderId.ToString());
     }
     catch (Exception ex)
