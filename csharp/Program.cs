@@ -37,7 +37,8 @@ app.MapPost("/publish", async (Order order) =>
     return Results.Ok(order);
 });
 
-app.MapPost("/consume", (Order order) =>
+// Subscribe to messages 
+app.MapPost("/orders", (Order order) =>
 {
     app.Logger.LogInformation("Message received: {order}", order);
     return Results.Ok();
@@ -50,7 +51,6 @@ app.MapPost("/consume", (Order order) =>
 // Invoke another service
 app.MapPost("/sendrequest", async (Order order) =>
 {
-    // Publish order to Diagrid pubsub, topic: orders 
     try
     {
         // Create invoke client for the "target" App ID

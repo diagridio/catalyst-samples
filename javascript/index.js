@@ -17,13 +17,17 @@ app.use(bodyParser.json({ type: '*/*' }))
 
 app.post('/publish', async function (req, res) {
     let order = req.body
-    //Publish an event using Dapr pub/sub
-    await client.pubsub.publish("pubsub", "orders", order);
-    console.log("Published data: " + order.orderId);
-    res.status(200)
+    try {
+      await client.pubsub.publish("pubsub", "orders", order);
+      console.log("Published data: " + order.orderId);
+      res.sendStatus(200);
+    } catch (error){
+      console.log("Error publishing order: " + order.orderId);
+      res.status(500).send(error);
+    }
 });
 
-app.post('/consume', (req, res) => {
+app.post('/orders', (req, res) => {
   console.log("Message received: " + JSON.stringify(req.body.data))
   res.sendStatus(200);
 });
@@ -41,6 +45,15 @@ app.post('/sendrequest', async function (req, res) {
   };
   let order = req.body
   
+  try {
+    await axios.post(`${daprHttpEndpoint}/receiverequest`, order, config);
+    console.log("Invocation successful with status code: %d ", res.status);
+    res.sendStatus(200);
+  } catch (error){
+    console.log("Error invoking app at " + `${daprHttpEndpoint}/receiverequest`);
+    res.status(500).send(error);
+  }
+
   await axios.post(`${daprHttpEndpoint}/receiverequest`, order, config).then(res => console.log("Invocation successful with status code: %d ", res.status)).catch(err => console.log(err))
 });
 
@@ -61,20 +74,38 @@ app.post('/savekv', async function (req, res) {
         value: req.body
     }]
 
-    await client.state.save("kvstore", state)
-    console.log("Order saved ")
+    try {
+      await client.state.save("kvstore", state);
+      console.log("Order saved successfully: " + req.body.orderId);
+      res.sendStatus(200);
+    } catch (error){
+      console.log("Error saving order: " + req.body.orderId);
+      res.status(500).send(error);
+    }
 });
 
 app.post('/getkv', async function(req, res){
   req.accepts('application/json')
-  var kv = await client.state.get("kvstore", req.body.orderId)
-  console.log("Retrieved Order: ", kv)
+  try {
+    var kv = await client.state.get("kvstore", req.body.orderId)
+    console.log("Retrieved order: ", kv)
+    res.sendStatus(200);
+  } catch (error){
+    console.log("Error retrieving order: " + req.body.orderId);
+    res.status(500).send(error);
+  }
 });
 
 app.post('/deletekv', async function (req, res) {
   req.accepts('application/json')
-  await client.state.delete("kvstore", req.body.orderId)
-  console.log("Deleted Order: ", req.body.orderId)
+  try {
+    await client.state.delete("kvstore", req.body.orderId)
+    console.log("Deleted order: ", req.body.orderId)
+    res.sendStatus(200);
+  } catch (error){
+    console.log("Error deleting order: " + req.body.orderId);
+    res.status(500).send(error);
+  }
 });
 
 //#endregion
