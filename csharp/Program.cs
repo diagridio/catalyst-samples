@@ -12,7 +12,7 @@ var app = builder.Build();
 var client = new DaprClientBuilder().Build();
 
 var DaprApiToken = Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
-var PubSubName = Environment.GetEnvironmentVariable("PUBSUB_NAME") || "pubsub";
+var PubSubName = Environment.GetEnvironmentVariable("PUBSUB_NAME") ?? "pubsub";
 
 // Dapr will send serialized event object vs. being raw CloudEvent
 app.UseCloudEvents();
@@ -20,7 +20,7 @@ app.UseCloudEvents();
 #region Publish Subscribe API 
 
 // Publish messages 
-app.MapPost("/publish", async (Order order) =>
+app.MapPost("/pubsub/orders", async (Order order) =>
 {
     // Publish order to Diagrid pubsub, topic: orders 
     try
@@ -39,7 +39,7 @@ app.MapPost("/publish", async (Order order) =>
 });
 
 // Subscribe to messages 
-app.MapPost("/consume", (Order order) =>
+app.MapPost("/pubsub/neworders", (Order order) =>
 {
     app.Logger.LogInformation("Message received: {order}", order);
     return Results.Ok();
@@ -50,7 +50,7 @@ app.MapPost("/consume", (Order order) =>
 #region Request/Reply API 
 
 // Invoke another service
-app.MapPost("/sendrequest", async (Order order) =>
+app.MapPost("/invoke/orders", async (Order order) =>
 {
     try
     {
@@ -78,7 +78,7 @@ app.MapPost("/sendrequest", async (Order order) =>
     return Results.Ok(order);
 });
 
-app.MapPost("/receiverequest", (Order order) =>
+app.MapPost("/invoke/neworders", (Order order) =>
 {
     app.Logger.LogInformation("Request received : {order}", order);
     return Results.Ok(order);
@@ -88,29 +88,8 @@ app.MapPost("/receiverequest", (Order order) =>
 
 #region KV API
 
-//Retrieve state
-app.MapPost("/getkv", async ([FromBody] Order order) =>
-{
-    // Store state in managed diagrid state store 
-    try
-    {
-        var kv = await client.GetStateAsync<Order>("kvstore", order.OrderId.ToString());
-        if (kv != null)
-            app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", order.OrderId);
-        else
-            app.Logger.LogInformation("Key {key} does not exist", order.OrderId);
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogError($"Error occurred while retrieving order: {order.OrderId}. {ex.InnerException}");
-        return Results.StatusCode(500);
-    }
-
-    return Results.Ok(order);
-});
-
 // Save state 
-app.MapPost("/savekv", async (Order order) =>
+app.MapPost("/kv/orders", async (Order order) =>
 {
     // Store state in managed diagrid state store 
     try
@@ -127,18 +106,39 @@ app.MapPost("/savekv", async (Order order) =>
     return Results.Ok(order);
 });
 
-// Delete state 
-app.MapPost("/deletekv", async ([FromBody] Order order) =>
+//Retrieve state
+app.MapGet("/kv/orders", async (int orderId) =>
 {
     // Store state in managed diagrid state store 
     try
     {
-        await client.DeleteStateAsync("kvstore", order.OrderId.ToString());
-        app.Logger.LogInformation("Delete KV Successful. Order deleted: {order}", order.OrderId);
+        var kv = await client.GetStateAsync<Order>("kvstore", orderId.ToString());
+        if (kv != null)
+            app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", order.OrderId);
+        else
+            app.Logger.LogInformation("Key {key} does not exist", order.OrderId);
     }
     catch (Exception ex)
     {
-        app.Logger.LogError("Error occurred while deleting order: {orderId}. Exception: {exception}", order.OrderId, ex.InnerException);
+        app.Logger.LogError($"Error occurred while retrieving order: {orderId.ToString()}. {ex.InnerException}");
+        return Results.StatusCode(500);
+    }
+
+    return Results.Ok(order);
+});
+
+// Delete state 
+app.Delete("/kv/orders", async (int orderId) =>
+{
+    // Store state in managed diagrid state store 
+    try
+    {
+        await client.DeleteStateAsync("kvstore", orderId.ToString());
+        app.Logger.LogInformation("Delete KV Successful. Order deleted: {order}", orderId);
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogError($"Error occurred while deleting order: {orderId.ToString()}. Exception: {ex.InnerException}");
         return Results.StatusCode(500);
     }
 
