@@ -33,7 +33,7 @@ public class Controller {
     public Mono<ResponseEntity> request(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
             try {
-                Order response = client.invokeMethod("receiver", "reply", order, HttpExtension.POST, Order.class).block();
+                Order response = client.invokeMethod("targe", "receiverequest", order, HttpExtension.POST, Order.class).block();
                 logger.info("Invoke Successful. Reply received: " + response.getOrderId());
                 return ResponseEntity.ok("SUCCESS");
             } catch (Exception e) {
@@ -43,7 +43,7 @@ public class Controller {
         });
     }
 
-    @PostMapping(path = "/reply", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/receiverequest", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Order> reply(@RequestBody Order order) {
         System.out.println("Request received : " + order.getOrderId());
         return ResponseEntity.ok(order);
@@ -114,7 +114,6 @@ public class Controller {
         });
     }
 
-    @Topic(name = "orders", pubsubName = "pubsub")
     @PostMapping(path = "/consume", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> subscribe(@RequestBody(required = false) CloudEvent<Order> cloudEvent) {
         return Mono.fromSupplier(() -> {

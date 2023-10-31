@@ -27,7 +27,7 @@ app.post('/publish', async function (req, res) {
     }
 });
 
-app.post('/orders', (req, res) => {
+app.post('/consume', (req, res) => {
   console.log("Message received: " + JSON.stringify(req.body.data))
   res.sendStatus(200);
 });

@@ -56,7 +56,7 @@ async def publish_messages(order: Order):
             print(f"ErrorCode={err.code()}")
 
 
-@app.post("/orders")
+@app.post("/consume")
 def receive_messages(event: CloudEvent):
     print('Message received : %s' % event.data['orderId'], flush=True)
     return {'success': True}

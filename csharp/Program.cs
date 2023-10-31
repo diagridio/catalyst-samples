@@ -38,7 +38,7 @@ app.MapPost("/publish", async (Order order) =>
 });
 
 // Subscribe to messages 
-app.MapPost("/orders", (Order order) =>
+app.MapPost("/consume", (Order order) =>
 {
     app.Logger.LogInformation("Message received: {order}", order);
     return Results.Ok();
