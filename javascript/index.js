@@ -49,7 +49,7 @@ app.post('/invoke/orders', async function (req, res) {
   
   try {
     await axios.post(`${daprHttpEndpoint}/invoke/neworders`, order, config);
-    console.log("Invocation successful with status code: %d ", res.status);
+    console.log("Invocation successful with status code: %d ", res.statusCode);
     res.sendStatus(200);
   } catch (error){
     console.log("Error invoking app at " + `${daprHttpEndpoint}/invoke/neworders`);
