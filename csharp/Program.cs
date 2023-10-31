@@ -107,7 +107,7 @@ app.MapPost("/kv/orders", async (Order order) =>
 });
 
 //Retrieve state
-app.MapGet("/kv/orders", async (int orderId) =>
+app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
 {
     // Store state in managed diagrid state store 
     try
@@ -128,7 +128,7 @@ app.MapGet("/kv/orders", async (int orderId) =>
 });
 
 // Delete state 
-app.MapDelete("/kv/orders", async (int orderId) =>
+app.MapDelete("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
 {
     // Store state in managed diagrid state store 
     try
