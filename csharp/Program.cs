@@ -27,7 +27,7 @@ app.MapPost("/pubsub/orders", async (Order order) =>
     try
     {
         await client.PublishEventAsync(PubSubName, "orders", order);
-        app.Logger.LogInformation("Publish Successful. Order published: {order}", order);
+        app.Logger.LogInformation("Publish Successful. Order published: {orderId}", order.OrderId);
 
     }
     catch (Exception ex)
@@ -42,7 +42,7 @@ app.MapPost("/pubsub/orders", async (Order order) =>
 // Subscribe to messages 
 app.MapPost("/pubsub/neworders", (Order order) =>
 {
-    app.Logger.LogInformation("Message received: {order}", order);
+    app.Logger.LogInformation("Order received: {orderId}", order.OrderId);
     return Results.Ok();
 });
 
