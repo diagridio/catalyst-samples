@@ -42,7 +42,7 @@ async def publish_orders(order: Order):
     with DaprClient() as d:
         try:
             result = d.publish_event(
-                pubsub_name='testpubsub',
+                pubsub_name='pubsub',
                 topic_name='orders',
                 data=order.model_dump_json(),
                 data_content_type='application/json',
@@ -51,7 +51,7 @@ async def publish_orders(order: Order):
                          order.orderId)
             return {'success': True}
         except grpc.RpcError as err:
-            print(f"ErrorCode={err.code()}")
+            print(f"Error occurred while publishing order: {err.code()}")
 
 
 @app.post("/pubsub/neworders")
@@ -73,7 +73,7 @@ async def send_order(order: Order):
         if result.ok:
             logging.info('Invocation successful with status code: %s' % result.status_code)
         else:
-            logging.error('Error occurred while invoking App ID: {%s' % result.reason)
+            logging.error('Error occurred while invoking App ID: %s' % result.reason)
         
         return str(order)
     except grpc.RpcError as err:
