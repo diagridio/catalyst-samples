@@ -37,7 +37,7 @@ async def helloworld():
     return {"Hello World"}
 
 
-@app.post('/pubsub/ordersxs')
+@app.post('/pubsub/orders')
 async def publish_orders(order: Order):
     with DaprClient() as d:
         try:
