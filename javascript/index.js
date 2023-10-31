@@ -30,7 +30,7 @@ app.post('/pubsub/orders', async function (req, res) {
 });
 
 app.post('/pubsub/neworders', (req, res) => {
-  console.log("Message received: " + JSON.stringify(req.body.data))
+  console.log("Order received: " + JSON.stringify(req.body.data))
   res.sendStatus(200);
 });
 
@@ -114,4 +114,4 @@ app.delete('/kv/orders/:orderId', async function (req, res) {
 //#endregion
 
 
-app.listen(appPort);
+app.listen(appPort, () => console.log(`server listening at :${appPort}`));
