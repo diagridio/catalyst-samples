@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import axios from "axios";
-import { DaprClient } from "@dapr/dapr";
+import { DaprClient, CommunicationProtocolEnum} from "@dapr/dapr";
 
 const daprApiToken = process.env.DAPR_API_TOKEN;
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT;
@@ -9,7 +9,7 @@ const appPort = process.env.PORT || 5000;
 
 const app = express()
 
-const client = new DaprClient({daprHost: daprHttpEndpoint, daprPort: "443", daprApiToken: daprApiToken});
+const client = new DaprClient({daprApiToken: daprApiToken, communicationProtocol: CommunicationProtocolEnum.HTTP});
 
 app.use(bodyParser.json({ type: '*/*' })) 
 
@@ -66,44 +66,46 @@ app.post('/receiverequest', (req, res) => {
 
 //#region Key/Value API
 
-app.post('/savekv', async function (req, res) {
+app.post('/orders', async function (req, res) {
   req.accepts('application/json')
+
+  const keyName = "order" + req.body.orderId
   const state = [
     {
-        key: req.body.orderId,
-        value: req.body
+      key: keyName,
+      value: req.body
     }]
 
-    try {
-      await client.state.save("kvstore", state);
-      console.log("Order saved successfully: " + req.body.orderId);
-      res.sendStatus(200);
-    } catch (error){
-      console.log("Error saving order: " + req.body.orderId);
-      res.status(500).send(error);
-    }
-});
-
-app.post('/getkv', async function(req, res){
-  req.accepts('application/json')
   try {
-    var kv = await client.state.get("kvstore", req.body.orderId)
-    console.log("Retrieved order: ", kv)
+    await client.state.save("kvstore", state);
+    console.log("Order saved successfully: " + req.body.orderId);
     res.sendStatus(200);
-  } catch (error){
-    console.log("Error retrieving order: " + req.body.orderId);
+  } catch (error) {
+    console.log("Error saving order: " + req.body.orderId);
     res.status(500).send(error);
   }
 });
 
-app.post('/deletekv', async function (req, res) {
-  req.accepts('application/json')
+app.get('/orders/:orderId', async function (req, res) {
+  const keyName = "order" + req.params.orderId
   try {
-    await client.state.delete("kvstore", req.body.orderId)
-    console.log("Deleted order: ", req.body.orderId)
+    const order = await client.state.get("kvstore", keyName)
+    console.log("Retrieved order: ", order)
+    res.json(order)
+  } catch (error) {
+    console.log("Error retrieving order: " + req.params.orderId);
+    res.status(500).send(error);
+  }
+});
+
+app.delete('/orders/:orderId', async function (req, res) {
+  const keyName = "order" + req.params.orderId
+  try {
+    await client.state.delete("kvstore", keyName)
+    console.log("Deleted order: ", req.params.orderId)
     res.sendStatus(200);
-  } catch (error){
-    console.log("Error deleting order: " + req.body.orderId);
+  } catch (error) {
+    console.log("Error deleting order: " + req.params.orderId);
     res.status(500).send(error);
   }
 });
