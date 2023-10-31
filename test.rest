@@ -1,15 +1,15 @@
 ### Publish/Subscribe API 
 
-POST http://localhost:5000/publish
+POST http://localhost:5001/pubsub/orders
 Content-Type: application/json
 
 {
-    "orderId": "1"
+    "orderId": 1
 }
 
 ### Request/Reply API 
 
-POST http://localhost:5001/sendrequest
+POST http://localhost:5001/invoke/orders
 Content-Type: application/json
 
 {
@@ -18,16 +18,16 @@ Content-Type: application/json
 
 ### Save KV 
 
-POST http://localhost:5000/savekv
+POST http://localhost:5001/kv/orders
 Content-Type: application/json
 
 {
-    "orderId": "1"
+    "orderId": 13
 }
 
 ### GET KV 
 
-POST http://localhost:5000/getkv
+POST http://localhost:5001/pubsub/orders
 Content-Type: application/json
 
 {

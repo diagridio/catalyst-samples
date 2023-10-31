@@ -11,7 +11,6 @@ app = FastAPI()
 
 logging.basicConfig(level=logging.INFO)
 
-
 class Order(BaseModel):
     orderId: int
 
@@ -28,7 +27,6 @@ class CloudEvent(BaseModel):
     type: str
     traceid: str
 
-
 # Set up required inputs for http client to perform service invocation
 base_url = os.getenv('DAPR_HTTP_ENDPOINT')
 dapr_api_token = os.getenv('DAPR_API_TOKEN')
@@ -39,8 +37,8 @@ async def helloworld():
     return {"Hello World"}
 
 
-@app.post('/publish')
-async def publish_messages(order: Order):
+@app.post('/pubsub/ordersxs')
+async def publish_orders(order: Order):
     with DaprClient() as d:
         try:
             result = d.publish_event(
@@ -56,14 +54,14 @@ async def publish_messages(order: Order):
             print(f"ErrorCode={err.code()}")
 
 
-@app.post("/consume")
-def receive_messages(event: CloudEvent):
+@app.post("/pubsub/neworders")
+def consume_orders(event: CloudEvent):
     print('Message received : %s' % event.data['orderId'], flush=True)
     return {'success': True}
 
 
-@app.post('/sendrequest')
-async def send_request(order: Order):
+@app.post('/invoke/orders')
+async def send_order(order: Order):
     headers = {'dapr-app-id': 'target', 'dapr-api-token': dapr_api_token, 'content-type': 'application/json'}
     try:
         result = requests.post(
@@ -82,13 +80,13 @@ async def send_request(order: Order):
         logging.error(f"ErrorCode={err.code()}")
 
 
-@app.post("/receiverequest")
-def receive_request(order: Order):
+@app.post("/invoke/neworders")
+def receive_order(order: Order):
     logging.info('Request received : ' + str(order))
     return str(order)
 
 
-@app.post('/savekv')
+@app.post('/kv/orders')
 def create_kv(order: Order):
     with DaprClient() as d:
         try:
@@ -99,15 +97,15 @@ def create_kv(order: Order):
             print(f"Error={err.code()}")
 
 
-@app.post('/getkv')
-def get_kv(order: Order):
+@app.get('/kv/orders/{orderId}')
+def get_kv(orderId: str):
     with DaprClient() as d:
-        kv = d.get_state("kvstore", order.orderId)
+        kv = d.get_state("kvstore", orderId)
         return kv.data
 
 
-@app.post('/deletekv')
-def delete_kv(order: Order):
+@app.delete('/kv/orders/{orderId}')
+def delete_kv(orderId):
     with DaprClient() as d:
-        kv = d.delete_state("kvstore", order.orderId)
+        kv = d.delete_state("kvstore", orderId)
         return {'success': True}

@@ -15,7 +15,7 @@ app.use(bodyParser.json({ type: '*/*' }))
 
 //#region Pub/Sub API
 
-app.post('/publish', async function (req, res) {
+app.post('/pubsub/orders', async function (req, res) {
     let order = req.body
     try {
       await client.pubsub.publish("pubsub", "orders", order);
@@ -27,7 +27,7 @@ app.post('/publish', async function (req, res) {
     }
 });
 
-app.post('/consume', (req, res) => {
+app.post('/pubsub/neworders', (req, res) => {
   console.log("Message received: " + JSON.stringify(req.body.data))
   res.sendStatus(200);
 });
@@ -36,7 +36,7 @@ app.post('/consume', (req, res) => {
 
 //#region Request/Reply API 
 
-app.post('/sendrequest', async function (req, res) {
+app.post('/invoke/orders', async function (req, res) {
   let config = {
     headers: {
         "dapr-app-id": "target",
@@ -46,18 +46,17 @@ app.post('/sendrequest', async function (req, res) {
   let order = req.body
   
   try {
-    await axios.post(`${daprHttpEndpoint}/receiverequest`, order, config);
+    await axios.post(`${daprHttpEndpoint}/invoke/neworders`, order, config);
     console.log("Invocation successful with status code: %d ", res.status);
     res.sendStatus(200);
   } catch (error){
-    console.log("Error invoking app at " + `${daprHttpEndpoint}/receiverequest`);
+    console.log("Error invoking app at " + `${daprHttpEndpoint}/invoke/neworders`);
     res.status(500).send(error);
   }
 
-  await axios.post(`${daprHttpEndpoint}/receiverequest`, order, config).then(res => console.log("Invocation successful with status code: %d ", res.status)).catch(err => console.log(err))
 });
 
-app.post('/receiverequest', (req, res) => {
+app.post('/invoke/neworders', (req, res) => {
   console.log("Request received: %s", JSON.stringify(req.body))
   res.sendStatus(200);
 });
@@ -66,7 +65,7 @@ app.post('/receiverequest', (req, res) => {
 
 //#region Key/Value API
 
-app.post('/orders', async function (req, res) {
+app.post('/kv/orders', async function (req, res) {
   req.accepts('application/json')
 
   const keyName = "order" + req.body.orderId
@@ -86,7 +85,7 @@ app.post('/orders', async function (req, res) {
   }
 });
 
-app.get('/orders/:orderId', async function (req, res) {
+app.get('/kv/orders/:orderId', async function (req, res) {
   const keyName = "order" + req.params.orderId
   try {
     const order = await client.state.get("kvstore", keyName)
@@ -98,7 +97,7 @@ app.get('/orders/:orderId', async function (req, res) {
   }
 });
 
-app.delete('/orders/:orderId', async function (req, res) {
+app.delete('/kv/orders/:orderId', async function (req, res) {
   const keyName = "order" + req.params.orderId
   try {
     await client.state.delete("kvstore", keyName)

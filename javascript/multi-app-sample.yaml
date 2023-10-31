@@ -9,15 +9,15 @@ apps:
       PORT: 5001
     workDir: .
     command: ["npm", "run", "start"]
-  - appId: target
-    appPort: 5002
-    env:
-      DAPR_API_TOKEN: diagrid://v1/58e239cc-f716-48f2-bf5b-2a3a3154c51c/115327/testproj/target/608e515f-9ed3-4690-9408-efda43999bae
-      DAPR_APP_ID: target
-      DAPR_GRPC_ENDPOINT: https://grpc-prj115327.api.dev.cloud.diagrid.io:443
-      DAPR_HTTP_ENDPOINT: https://http-prj115327.api.dev.cloud.diagrid.io
-      PORT: 5002
-    workDir: .
-    command: ["npm", "run", "start"]
-appLogDestination: ""
-appIdLogDestination: ""
+#   - appId: target
+#     appPort: 5002
+#     env:
+#       DAPR_API_TOKEN: diagrid://v1/58e239cc-f716-48f2-bf5b-2a3a3154c51c/115327/testproj/target/608e515f-9ed3-4690-9408-efda43999bae
+#       DAPR_APP_ID: target
+#       DAPR_GRPC_ENDPOINT: https://grpc-prj115327.api.dev.cloud.diagrid.io:443
+#       DAPR_HTTP_ENDPOINT: https://http-prj115327.api.dev.cloud.diagrid.io
+#       PORT: 5002
+#     workDir: .
+#     command: ["npm", "run", "start"]
+# appLogDestination: ""
+# appIdLogDestination: ""

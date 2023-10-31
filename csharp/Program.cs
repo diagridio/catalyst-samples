@@ -12,6 +12,7 @@ var app = builder.Build();
 var client = new DaprClientBuilder().Build();
 
 var DaprApiToken = Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
+var PubSubName = Environment.GetEnvironmentVariable("PUBSUB_NAME") || "pubsub";
 
 // Dapr will send serialized event object vs. being raw CloudEvent
 app.UseCloudEvents();
@@ -24,7 +25,7 @@ app.MapPost("/publish", async (Order order) =>
     // Publish order to Diagrid pubsub, topic: orders 
     try
     {
-        await client.PublishEventAsync("pubsub", "orders", order);
+        await client.PublishEventAsync(PubSubName, "orders", order);
         app.Logger.LogInformation("Publish Successful. Order published: {order}", order);
 
     }
