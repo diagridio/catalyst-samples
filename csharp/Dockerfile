@@ -11,16 +11,16 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["chsarp.csproj", "./"]
-RUN dotnet restore "chsarp.csproj"
+COPY ["csharp.csproj", "./"]
+RUN dotnet restore "csharp.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "chsarp.csproj" -c Release -o /app/build
+RUN dotnet build "csharp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "chsarp.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "csharp.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "chsarp.dll"]
+ENTRYPOINT ["dotnet", "csharp.dll"]
