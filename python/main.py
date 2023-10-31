@@ -30,6 +30,7 @@ class CloudEvent(BaseModel):
 # Set up required inputs for http client to perform service invocation
 base_url = os.getenv('DAPR_HTTP_ENDPOINT')
 dapr_api_token = os.getenv('DAPR_API_TOKEN')
+pubsub_name = os.getenv('PUBSUB_NAME')
 
 
 @app.get('/')
@@ -42,7 +43,7 @@ async def publish_orders(order: Order):
     with DaprClient() as d:
         try:
             result = d.publish_event(
-                pubsub_name='pubsub',
+                pubsub_name=pubsub_name,
                 topic_name='orders',
                 data=order.model_dump_json(),
                 data_content_type='application/json',

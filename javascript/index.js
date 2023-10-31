@@ -6,6 +6,7 @@ import { DaprClient, CommunicationProtocolEnum} from "@dapr/dapr";
 const daprApiToken = process.env.DAPR_API_TOKEN;
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT;
 const appPort = process.env.PORT || 5000; 
+const pubSubName = process.env.PUBSUB_NAME || "pubsub"; 
 
 const app = express()
 
@@ -18,7 +19,7 @@ app.use(bodyParser.json({ type: '*/*' }))
 app.post('/pubsub/orders', async function (req, res) {
     let order = req.body
     try {
-      await client.pubsub.publish("pubsub", "orders", order);
+      await client.pubsub.publish(pubSubName, "orders", order);
       console.log("Published data: " + order.orderId);
       res.sendStatus(200);
     } catch (error){
