@@ -114,18 +114,18 @@ app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
     try
     {
         var kv = await client.GetStateAsync<Order>(KVStoreName, orderId.ToString());
-        if (kv != null)
+        if (kv != null) {
             app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", orderId.ToString());
-        else
+        } else {
             app.Logger.LogInformation("Key {key} does not exist", orderId.ToString());
+        }
+        return Results.Ok(kv);
     }
     catch (Exception ex)
     {
         app.Logger.LogError("Error occurred while retrieving order: {order}. Exception: {exception}", orderId.ToString(), ex.InnerException);
         return Results.StatusCode(500);
     }
-
-    return Results.Ok(orderId.ToString());
 });
 
 // Delete state 
