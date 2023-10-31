@@ -1,7 +1,6 @@
 from dapr.clients import DaprClient
-from fastapi import FastAPI
-from pydantic import BaseModel, Json
-from cloudevents.sdk.event import v1
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 import logging
 import grpc
 import requests
@@ -101,18 +100,26 @@ def create_kv(order: Order):
                          key=str(order.orderId), value=str(order))
             return {"success": True}
         except grpc.RpcError as err:
-            print(f"Error={err.code()}")
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
 
 
 @app.get('/kv/orders/{orderId}')
 def get_kv(orderId: int):
     with DaprClient() as d:
-        kv = d.get_state(kvstore_name, str(orderId))
-        return kv.data
-
+        try:
+            kv = d.get_state(kvstore_name, str(orderId))
+            return {"data": kv.data}
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
 
 @app.delete('/kv/orders/{orderId}')
 def delete_kv(orderId: int):
     with DaprClient() as d:
-        kv = d.delete_state(kvstore_name, str(orderId))
-        return {'success': True}
+        try:
+            d.delete_state(kvstore_name, str(orderId))
+            return {'success': True}
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
