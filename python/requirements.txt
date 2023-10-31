@@ -1,6 +1,7 @@
-dapr
-pydantic
-grpc
-fastapi
-requests
-os
+cloudevents==1.10.1
+dapr==1.11.0
+fastapi==0.104.1
+grpcio==1.59.2
+pydantic==2.4.2
+requests==2.31.0
+uvicorn==0.23.2
