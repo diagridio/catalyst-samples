@@ -30,7 +30,7 @@ app.post('/pubsub/orders', async function (req, res) {
 });
 
 app.post('/pubsub/neworders', (req, res) => {
-  console.log("Message received: " + JSON.stringify(req.body.data))
+  console.log("Order received: " + JSON.stringify(req.body.data))
   res.sendStatus(200);
 });
 
@@ -49,7 +49,7 @@ app.post('/invoke/orders', async function (req, res) {
   
   try {
     await axios.post(`${daprHttpEndpoint}/invoke/neworders`, order, config);
-    console.log("Invocation successful with status code: %d ", res.status);
+    console.log("Invocation successful with status code: %d ", res.statusCode);
     res.sendStatus(200);
   } catch (error){
     console.log("Error invoking app at " + `${daprHttpEndpoint}/invoke/neworders`);
@@ -114,4 +114,4 @@ app.delete('/kv/orders/:orderId', async function (req, res) {
 //#endregion
 
 
-app.listen(appPort);
+app.listen(appPort, () => console.log(`server listening at :${appPort}`));

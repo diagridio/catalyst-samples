@@ -61,7 +61,7 @@ app.MapPost("/invoke/orders", async (Order order) =>
         var orderJson = JsonSerializer.Serialize(order);
         var content = new StringContent(orderJson, Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync("/receiverequest", content);
+        var response = await httpClient.PostAsync("/invoke/neworders", content);
 
         if (response.IsSuccessStatusCode)
             app.Logger.LogInformation("Invocation successful with status code {statusCode}", response.StatusCode);
@@ -114,18 +114,19 @@ app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
     try
     {
         var kv = await client.GetStateAsync<Order>(KVStoreName, orderId.ToString());
-        if (kv != null)
+        if (kv != null) {
             app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", orderId.ToString());
-        else
+            return Results.StatusCode(200);
+        } else {
             app.Logger.LogInformation("Key {key} does not exist", orderId.ToString());
+            return Results.StatusCode(204);
+        }
     }
     catch (Exception ex)
     {
         app.Logger.LogError("Error occurred while retrieving order: {order}. Exception: {exception}", orderId.ToString(), ex.InnerException);
         return Results.StatusCode(500);
     }
-
-    return Results.Ok(orderId.ToString());
 });
 
 // Delete state 
