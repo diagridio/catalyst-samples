@@ -114,35 +114,35 @@ app.MapGet("/kv/orders", async (int orderId) =>
     {
         var kv = await client.GetStateAsync<Order>("kvstore", orderId.ToString());
         if (kv != null)
-            app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", order.OrderId);
+            app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", orderId.ToString());
         else
-            app.Logger.LogInformation("Key {key} does not exist", order.OrderId);
+            app.Logger.LogInformation("Key {key} does not exist", orderId.ToString());
     }
     catch (Exception ex)
     {
-        app.Logger.LogError($"Error occurred while retrieving order: {orderId.ToString()}. {ex.InnerException}");
+        app.Logger.LogError("Error occurred while retrieving order: {order}. Exception: {exception}", orderId.ToString(), ex.InnerException);
         return Results.StatusCode(500);
     }
 
-    return Results.Ok(order);
+    return Results.Ok(orderId.ToString());
 });
 
 // Delete state 
-app.Delete("/kv/orders", async (int orderId) =>
+app.MapDelete("/kv/orders", async (int orderId) =>
 {
     // Store state in managed diagrid state store 
     try
     {
         await client.DeleteStateAsync("kvstore", orderId.ToString());
-        app.Logger.LogInformation("Delete KV Successful. Order deleted: {order}", orderId);
+        app.Logger.LogInformation("Delete KV Successful. Order deleted: {order}", orderId.ToString());
     }
     catch (Exception ex)
     {
-        app.Logger.LogError($"Error occurred while deleting order: {orderId.ToString()}. Exception: {ex.InnerException}");
+        app.Logger.LogError("Error occurred while deleting order: {order}. Exception: {exception}", orderId.ToString(), ex.InnerException);
         return Results.StatusCode(500);
     }
 
-    return Results.Ok(order);
+    return Results.Ok(orderId.ToString());
 });
 
 #endregion
