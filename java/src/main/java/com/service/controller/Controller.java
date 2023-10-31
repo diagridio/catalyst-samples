@@ -118,16 +118,16 @@ public class Controller {
     }
 
     // Delete state
-    @DeleteMapping(path = "/kv/orders", consumes = MediaType.ALL_VALUE)
-    public Mono<ResponseEntity> deleteKV(@RequestBody(required = true) Order order) {
+    @DeleteMapping(path = "/kv/orders/{orderId}", consumes = MediaType.ALL_VALUE)
+    public Mono<ResponseEntity> deleteKV(@PathVariable String orderId) {
         return Mono.fromSupplier(() -> {
 
             try {
-                Void response = client.deleteState(KVSTORE_NAME, "" + order.getOrderId()).block();
-                logger.info("Delete KV Successful. Order deleted: " + order.getOrderId());
+                Void response = client.deleteState(KVSTORE_NAME, "" + orderId).block();
+                logger.info("Delete KV Successful. Order deleted: " + orderId);
                 return ResponseEntity.ok("SUCCESS");
             } catch (Exception e) {
-                logger.error("Error occurred while deleting order: " + order.getOrderId());
+                logger.error("Error occurred while deleting order: " + orderId);
                 throw new RuntimeException(e);
             }
         });
