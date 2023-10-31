@@ -29,11 +29,11 @@ public class Controller {
         client = new DaprClientBuilder().build();
     }
 
-    @PostMapping(path = "/sendrequest", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/invoke/orders", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> request(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
             try {
-                Order response = client.invokeMethod("targe", "receiverequest", order, HttpExtension.POST, Order.class).block();
+                Order response = client.invokeMethod("target", "invoke/neworders", order, HttpExtension.POST, Order.class).block();
                 logger.info("Invoke Successful. Reply received: " + response.getOrderId());
                 return ResponseEntity.ok("SUCCESS");
             } catch (Exception e) {
@@ -43,19 +43,19 @@ public class Controller {
         });
     }
 
-    @PostMapping(path = "/receiverequest", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/invoke/neworders", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Order> reply(@RequestBody Order order) {
         System.out.println("Request received : " + order.getOrderId());
         return ResponseEntity.ok(order);
     }
 
-    @PostMapping(path = "/getkv", consumes = MediaType.ALL_VALUE)
-    public Mono<ResponseEntity> getKV(@RequestBody(required = true) Order order) {
+    @GetMapping(path = "/kv/orders/{orderId}", consumes = MediaType.ALL_VALUE)
+    public Mono<ResponseEntity> getKV(@PathVariable String orderId) {
         return Mono.fromSupplier(() -> {
             Order responseOrder = null;
             // Get state from the state store
             try {
-                State<Order> response = client.getState("kvstore", "" + order.getOrderId(), Order.class).block();
+                State<Order> response = client.getState("kvstore", "" + orderId).block();
                 responseOrder = response.getValue();
                 logger.info("Get KV Successful. Order retrieved: " + responseOrder);
                 return ResponseEntity.ok(responseOrder);
@@ -66,7 +66,7 @@ public class Controller {
         });
     }
 
-    @PostMapping(path = "/savekv", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/kv/orders", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> saveKV(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
 
@@ -82,7 +82,7 @@ public class Controller {
         });
     }
 
-    @PostMapping(path = "/deletekv", consumes = MediaType.ALL_VALUE)
+    @DeleteMapping(path = "/kv/orders", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> deleteKV(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
 
@@ -98,7 +98,7 @@ public class Controller {
         });
     }
 
-    @PostMapping(path = "/publish", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/pubsub/orders", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> publish(@RequestBody(required = true) Order order) {
         return Mono.fromSupplier(() -> {
 
@@ -114,7 +114,7 @@ public class Controller {
         });
     }
 
-    @PostMapping(path = "/consume", consumes = MediaType.ALL_VALUE)
+    @PostMapping(path = "/pubsub/neworders", consumes = MediaType.ALL_VALUE)
     public Mono<ResponseEntity> subscribe(@RequestBody(required = false) CloudEvent<Order> cloudEvent) {
         return Mono.fromSupplier(() -> {
             try {
