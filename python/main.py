@@ -11,6 +11,7 @@ app = FastAPI()
 
 logging.basicConfig(level=logging.INFO)
 
+
 class Order(BaseModel):
     orderId: int
 
@@ -27,11 +28,12 @@ class CloudEvent(BaseModel):
     type: str
     traceid: str
 
+
 # Set up required inputs for http client to perform service invocation
 base_url = os.getenv('DAPR_HTTP_ENDPOINT')
 dapr_api_token = os.getenv('DAPR_API_TOKEN')
-pubsub_name = os.getenv('PUBSUB_NAME', "pubsub")
-kvstore_name = os.getenv('KVSTORE_NAME', "kvstore")
+pubsub_name = os.getenv('PUBSUB_NAME', 'pubsub')
+kvstore_name = os.getenv('KVSTORE_NAME', 'kvstore')
 
 
 @app.get('/')
@@ -56,15 +58,16 @@ async def publish_orders(order: Order):
             print(f"Error occurred while publishing order: {err.code()}")
 
 
-@app.post("/pubsub/neworders")
+@app.post('/pubsub/neworders')
 def consume_orders(event: CloudEvent):
-    print('Message received : %s' % event.data['orderId'], flush=True)
+    logging.info('Order received : %s' % event.data['orderId'], flush=True)
     return {'success': True}
 
 
 @app.post('/invoke/orders')
 async def send_order(order: Order):
-    headers = {'dapr-app-id': 'target', 'dapr-api-token': dapr_api_token, 'content-type': 'application/json'}
+    headers = {'dapr-app-id': 'target', 'dapr-api-token': dapr_api_token,
+               'content-type': 'application/json'}
     try:
         result = requests.post(
             url='%s/invoke/neworders' % (base_url),
@@ -73,16 +76,18 @@ async def send_order(order: Order):
         )
 
         if result.ok:
-            logging.info('Invocation successful with status code: %s' % result.status_code)
+            logging.info('Invocation successful with status code: %s' %
+                         result.status_code)
         else:
-            logging.error('Error occurred while invoking App ID: %s' % result.reason)
-        
+            logging.error(
+                'Error occurred while invoking App ID: %s' % result.reason)
+
         return str(order)
     except grpc.RpcError as err:
         logging.error(f"ErrorCode={err.code()}")
 
 
-@app.post("/invoke/neworders")
+@app.post('/invoke/neworders')
 def receive_order(order: Order):
     logging.info('Request received : ' + str(order))
     return str(order)
@@ -102,12 +107,12 @@ def create_kv(order: Order):
 @app.get('/kv/orders/{orderId}')
 def get_kv(orderId: int):
     with DaprClient() as d:
-        kv = d.get_state(kvstore_name, orderId)
+        kv = d.get_state(kvstore_name, str(orderId))
         return kv.data
 
 
 @app.delete('/kv/orders/{orderId}')
 def delete_kv(orderId: int):
     with DaprClient() as d:
-        kv = d.delete_state(kvstore_name, orderId)
+        kv = d.delete_state(kvstore_name, str(orderId))
         return {'success': True}
