@@ -1,6 +1,7 @@
 from dapr.clients import DaprClient
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from cloudevents.sdk.event import v1
 import logging
 import grpc
 import requests
