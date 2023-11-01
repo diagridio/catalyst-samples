@@ -429,8 +429,6 @@ replay_pid*
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
-/generic-code/java/Main.iml
-*/target/*
 archive/*
 
 # Javascipt
@@ -439,3 +437,8 @@ archive/*
 # Diagrid
 # dev file
 */dev-*.yaml
+
+# Java
+/java/Main.iml
+*/target/*
+/.idea/
