@@ -37,13 +37,13 @@ jobs:
         docker buildx build --platform linux/amd64 -t csharp-sample .
 
     - name: Configure AWS credentials
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ vars.AWS_CI_ROLE }}
         aws-region: ${{ vars.AWS_CI_REGION }}
     - name: Login to Amazon ECR
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
