@@ -29,6 +29,7 @@ app.MapPost("/pubsub/orders", async (Order order) =>
     {
         await client.PublishEventAsync(PubSubName, "orders", order);
         app.Logger.LogInformation("Publish Successful. Order published: {orderId}", order.OrderId);
+        return Results.StatusCode(200);
 
     }
     catch (Exception ex)
@@ -36,8 +37,6 @@ app.MapPost("/pubsub/orders", async (Order order) =>
         app.Logger.LogError("Error occurred while publishing order: {orderId}. Exception: {exception}", order.OrderId, ex.InnerException);
         return Results.StatusCode(500);
     }
-
-    return Results.Ok(order);
 });
 
 // Subscribe to messages 
@@ -67,7 +66,7 @@ app.MapPost("/invoke/orders", async (Order order) =>
         if (response.IsSuccessStatusCode)
         {
             app.Logger.LogInformation("Invocation successful with status code {statusCode}", response.StatusCode);
-            return Results.Ok(order);
+            return Results.StatusCode(200);
         }
         else
         {
@@ -100,7 +99,7 @@ app.MapPost("/kv/orders", async (Order order) =>
     {
         await client.SaveStateAsync(KVStoreName, order.OrderId.ToString(), order);
         app.Logger.LogInformation("Save KV Successful. Order saved: {order}", order.OrderId);
-        return Results.Ok(order);
+        return Results.StatusCode(200);
     }
     catch (Exception ex)
     {
