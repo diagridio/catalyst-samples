@@ -63,12 +63,12 @@ app.MapPost("/invoke/orders", async (Order order) =>
 
         var response = await httpClient.PostAsync("/invoke/neworders", content);
 
-        if (response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode) {
             app.Logger.LogInformation("Invocation successful with status code {statusCode}", response.StatusCode);
-        else
+        } else {
             app.Logger.LogError("Invocation unsuccessful with status code {statusCode}", response.StatusCode);
-
-
+            return Results.StatusCode((int)response.StatusCode);
+        }
     }
     catch (Exception ex)
     {
