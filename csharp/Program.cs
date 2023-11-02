@@ -67,7 +67,7 @@ app.MapPost("/invoke/orders", async (Order order) =>
             app.Logger.LogInformation("Invocation successful with status code {statusCode}", response.StatusCode);
         } else {
             app.Logger.LogError("Invocation unsuccessful with status code {statusCode}", response.StatusCode);
-            return Results.StatusCode((int)response.StatusCode);
+            return Results.StatusCode(500);
         }
     }
     catch (Exception ex)
