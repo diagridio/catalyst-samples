@@ -1,0 +1,54 @@
+name: Java Sample
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/java.yaml
+      - java/*
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    environment: shared-production
+    # Only run on main repo (not on forks)
+    if: github.repository_owner == 'diagridio'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: build local
+      run: |
+        cd java
+        mvn install
+  
+    - name: build container
+      run: |
+        cd java
+        docker buildx build --platform linux/amd64 -t java-sample .
+
+    - name: Configure AWS credentials
+      if: github.event_name != 'pull_request'
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ vars.AWS_CI_ROLE }}
+        aws-region: ${{ vars.AWS_CI_REGION }}
+    - name: Login to Amazon ECR
+      if: github.event_name != 'pull_request'
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: push container
+      if: github.event_name != 'pull_request'
+      run: |
+        docker tag java-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
+        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
