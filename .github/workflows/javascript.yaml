@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write'
-    environment: shared-production
+    environment: shared-development
     # Only run on main repo (not on forks)
     if: github.repository_owner == 'diagridio'
     steps:
