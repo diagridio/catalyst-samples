@@ -48,7 +48,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
 
     - name: push container
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       run: |
         docker tag csharp-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
         docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
