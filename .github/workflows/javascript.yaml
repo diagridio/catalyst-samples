@@ -28,15 +28,6 @@ jobs:
         cache: 'npm'
         cache-dependency-path: "**/package-lock.json"
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ vars.AWS_CI_ROLE }}
-        aws-region: ${{ vars.AWS_CI_REGION }}
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
     - name: build local
       run: |
         cd javascript
@@ -46,8 +37,20 @@ jobs:
       run: |
         cd javascript
         docker buildx build --platform linux/amd64 -t javascript-sample .
-        docker tag javascript-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/javascript-sample:latest
+
+    - name: Configure AWS credentials
+      if: github.event_name != 'pull_request'
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ vars.AWS_CI_ROLE }}
+        aws-region: ${{ vars.AWS_CI_REGION }}
+    - name: Login to Amazon ECR
+      if: github.event_name != 'pull_request'
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
 
     - name: push container
       if: github.event_name != 'pull_request'
-      run: docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/javascript-sample:latest
+      run: |
+        docker tag javascript-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/javascript-sample:latest
+        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/javascript-sample:latest

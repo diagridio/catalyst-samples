@@ -1,4 +1,4 @@
-name: CSharp Sample
+name: C Sharp Sample
 
 on:
   push:
@@ -26,15 +26,6 @@ jobs:
       with:
           dotnet-version: '6.0.x'
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: ${{ vars.AWS_CI_ROLE }}
-        aws-region: ${{ vars.AWS_CI_REGION }}
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-
     - name: build local
       run: |
         cd csharp
@@ -44,9 +35,20 @@ jobs:
       run: |
         cd csharp
         docker buildx build --platform linux/amd64 -t csharp-sample .
-        docker tag csharp-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
+
+    - name: Configure AWS credentials
+      if: github.event_name != 'pull_request'
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ vars.AWS_CI_ROLE }}
+        aws-region: ${{ vars.AWS_CI_REGION }}
+    - name: Login to Amazon ECR
+      if: github.event_name != 'pull_request'
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
 
     - name: push container
       if: github.event_name != 'pull_request'
-      run: docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
-
+      run: |
+        docker tag csharp-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
+        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
