@@ -43,7 +43,7 @@ app.MapPost("/pubsub/orders", async (Order order) =>
 app.MapPost("/pubsub/neworders", (Order order) =>
 {
     app.Logger.LogInformation("Order received: {orderId}", order.OrderId);
-    return Results.Ok();
+    return Results.Ok(order);
 });
 
 #endregion
