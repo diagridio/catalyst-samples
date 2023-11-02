@@ -1,12 +1,12 @@
 # Diagrid Catalyst Samples
 
+This is the companion repository for the Diagrid Catalyst local and cloud tutorials.
+
 ## Diagrid Catalyst
 
 Diagrid Catalyst provides a set of unified APIs designed for distributed application development. Visit [Catalyst documentation](https://docs.diagrid.io/catalyst) for more information.
 
 ## Catalyst Samples
-
-This is the companion repository for the Diagrid Catalyst local and cloud tutorials.
 
 Local Tutorials
 
