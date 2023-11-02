@@ -11,9 +11,10 @@ var app = builder.Build();
 
 var client = new DaprClientBuilder().Build();
 
-var DaprApiToken = Environment.GetEnvironmentVariable("DAPR_API_TOKEN");
+var DaprApiToken = Environment.GetEnvironmentVariable("DAPR_API_TOKEN") ?? "";
 var PubSubName = Environment.GetEnvironmentVariable("PUBSUB_NAME") ?? "pubsub";
 var KVStoreName = Environment.GetEnvironmentVariable("KVSTORE_NAME") ?? "kvstore";
+var InvokeTargetAppID = Environment.GetEnvironmentVariable("INVOKE_APPID") ?? "target";
 
 // Dapr will send serialized event object vs. being raw CloudEvent
 app.UseCloudEvents();
@@ -56,7 +57,7 @@ app.MapPost("/invoke/orders", async (Order order) =>
     try
     {
         // Create invoke client for the "target" App ID
-        var httpClient = DaprClient.CreateInvokeHttpClient("target");
+        var httpClient = DaprClient.CreateInvokeHttpClient(InvokeTargetAppID);
         httpClient.DefaultRequestHeaders.Add("dapr-api-token", DaprApiToken);
         var orderJson = JsonSerializer.Serialize(order);
         var content = new StringContent(orderJson, Encoding.UTF8, "application/json");
@@ -114,10 +115,13 @@ app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
     try
     {
         var kv = await client.GetStateAsync<Order>(KVStoreName, orderId.ToString());
-        if (kv != null) {
+        if (kv != null)
+        {
             app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", orderId.ToString());
             return Results.StatusCode(200);
-        } else {
+        }
+        else
+        {
             app.Logger.LogInformation("Key {key} does not exist", orderId.ToString());
             return Results.StatusCode(204);
         }

@@ -30,10 +30,11 @@ class CloudEvent(BaseModel):
 
 
 # Set up required inputs for http client to perform service invocation
-base_url = os.getenv('DAPR_HTTP_ENDPOINT')
-dapr_api_token = os.getenv('DAPR_API_TOKEN')
+base_url = os.getenv('DAPR_HTTP_ENDPOINT', 'http://localhost')
+dapr_api_token = os.getenv('DAPR_API_TOKEN', '')
 pubsub_name = os.getenv('PUBSUB_NAME', 'pubsub')
 kvstore_name = os.getenv('KVSTORE_NAME', 'kvstore')
+invoke_target_appid = os.getenv('INVOKE_APPID', 'target')
 
 
 @app.get('/')
@@ -67,7 +68,7 @@ def consume_orders(event: CloudEvent):
 
 @app.post('/invoke/orders')
 async def send_order(order: Order):
-    headers = {'dapr-app-id': 'target', 'dapr-api-token': dapr_api_token,
+    headers = {'dapr-app-id': invoke_target_appid, 'dapr-api-token': dapr_api_token,
                'content-type': 'application/json'}
     try:
         result = requests.post(

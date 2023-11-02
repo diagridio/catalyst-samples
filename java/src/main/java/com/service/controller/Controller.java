@@ -34,6 +34,7 @@ public class Controller {
     private static final String KVSTORE_NAME = System.getenv().getOrDefault("KVSTORE_NAME", "kvstore");
     private static final String DAPR_HTTP_ENDPOINT = System.getenv().getOrDefault("DAPR_HTTP_ENDPOINT", "http://localhost");
     private static final String DAPR_API_TOKEN = System.getenv().getOrDefault("DAPR_API_TOKEN", "");
+    private static final String INVOKE_TARGET_APPID = System.getenv().getOrDefault("INVOKE_APPID", "target");
 
     @PostConstruct
     public void init() {
@@ -88,7 +89,7 @@ public class Controller {
                         .uri(URI.create(DAPR_HTTP_ENDPOINT + "/invoke/neworders"))
                         .header("dapr-api-token", DAPR_API_TOKEN)
                         .header("Content-Type", "application/json")
-                        .header("dapr-app-id", "target")
+                        .header("dapr-app-id", INVOKE_TARGET_APPID)
                         .build();
 
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());

@@ -3,11 +3,12 @@ import bodyParser from 'body-parser';
 import axios from "axios";
 import { DaprClient, CommunicationProtocolEnum} from "@dapr/dapr";
 
-const daprApiToken = process.env.DAPR_API_TOKEN;
-const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT;
-const appPort = process.env.PORT || 5000; 
+const daprApiToken = process.env.DAPR_API_TOKEN || "";
+const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT || "http://localhost";
+const appPort = process.env.PORT || 5001; 
 const pubSubName = process.env.PUBSUB_NAME || "pubsub"; 
 const kvName = process.env.KVSTORE_NAME || "kvstore"; 
+const invokeTargetAppID = process.env.INVOKE_APPID || "target"; 
 
 const app = express()
 
@@ -41,7 +42,7 @@ app.post('/pubsub/neworders', (req, res) => {
 app.post('/invoke/orders', async function (req, res) {
   let config = {
     headers: {
-        "dapr-app-id": "target",
+        "dapr-app-id": invokeTargetAppID,
         "dapr-api-token": daprApiToken
     }
   };
