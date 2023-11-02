@@ -64,9 +64,13 @@ app.MapPost("/invoke/orders", async (Order order) =>
 
         var response = await httpClient.PostAsync("/invoke/neworders", content);
 
-        if (response.IsSuccessStatusCode) {
+        if (response.IsSuccessStatusCode)
+        {
             app.Logger.LogInformation("Invocation successful with status code {statusCode}", response.StatusCode);
-        } else {
+            return Results.Ok(order);
+        }
+        else
+        {
             app.Logger.LogError("Invocation unsuccessful with status code {statusCode}", response.StatusCode);
             return Results.StatusCode(500);
         }
@@ -76,8 +80,6 @@ app.MapPost("/invoke/orders", async (Order order) =>
         app.Logger.LogError("Error occurred while invoking App ID: {exception}", ex.InnerException);
         return Results.StatusCode(500);
     }
-
-    return Results.Ok(order);
 });
 
 app.MapPost("/invoke/neworders", (Order order) =>
@@ -98,14 +100,13 @@ app.MapPost("/kv/orders", async (Order order) =>
     {
         await client.SaveStateAsync(KVStoreName, order.OrderId.ToString(), order);
         app.Logger.LogInformation("Save KV Successful. Order saved: {order}", order.OrderId);
+        return Results.Ok(order);
     }
     catch (Exception ex)
     {
         app.Logger.LogError("Error occurred while saving order: {orderId}. Exception: {exception}", order.OrderId, ex.InnerException);
         return Results.StatusCode(500);
     }
-
-    return Results.Ok(order);
 });
 
 //Retrieve state
@@ -118,7 +119,7 @@ app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
         if (kv != null)
         {
             app.Logger.LogInformation("Get KV Successful. Order retrieved: {order}", orderId.ToString());
-            return Results.StatusCode(200);
+            return Results.Ok(kv);
         }
         else
         {
@@ -131,6 +132,7 @@ app.MapGet("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
         app.Logger.LogError("Error occurred while retrieving order: {order}. Exception: {exception}", orderId.ToString(), ex.InnerException);
         return Results.StatusCode(500);
     }
+
 });
 
 // Delete state 
@@ -141,14 +143,13 @@ app.MapDelete("/kv/orders/{orderId}", async ([FromRoute] int orderId) =>
     {
         await client.DeleteStateAsync(KVStoreName, orderId.ToString());
         app.Logger.LogInformation("Delete KV Successful. Order deleted: {order}", orderId.ToString());
+        return Results.StatusCode(200);
     }
     catch (Exception ex)
     {
         app.Logger.LogError("Error occurred while deleting order: {order}. Exception: {exception}", orderId.ToString(), ex.InnerException);
         return Results.StatusCode(500);
     }
-
-    return Results.Ok(orderId.ToString());
 });
 
 #endregion
