@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - ./github/workflows/csharp.yaml
+      - .github/workflows/csharp.yaml
       - csharp/*
 
 jobs:
@@ -17,6 +17,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
     environment: shared-production
+    # Only run on main repo (not on forks)
+    if: github.repository_owner == 'diagridio'
     steps:
     - uses: actions/checkout@v3
 
@@ -38,10 +40,13 @@ jobs:
         cd csharp
         dotnet build
 
-    - name: build and push container
+    - name: build container
       run: |
         cd csharp
         docker buildx build --platform linux/amd64 -t csharp-sample .
         docker tag csharp-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
+
+    - name: push container
+      if: github.event_name != 'pull_request'
+      run: docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
 

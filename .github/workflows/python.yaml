@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - ./github/workflows/python.yaml
+      - .github/workflows/python.yaml
       - python/*
 
 jobs:
@@ -17,6 +17,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
     environment: shared-production
+    # Only run on main repo (not on forks)
+    if: github.repository_owner == 'diagridio'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
@@ -39,9 +41,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
   
-    - name: build and push container
+    - name: build container
       run: |
         cd python
         docker buildx build --platform linux/amd64 -t python-sample .
         docker tag python-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/python-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/python-sample:latest
+
+    - name: push container
+      if: github.event_name != 'pull_request'
+      run: docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/python-sample:latest

@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - ./github/workflows/java.yaml
+      - .github/workflows/java.yaml
       - java/*
 
 jobs:
@@ -17,6 +17,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
     environment: shared-production
+    # Only run on main repo (not on forks)
+    if: github.repository_owner == 'diagridio'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-java@v3
@@ -38,9 +40,12 @@ jobs:
         cd java
         mvn install
   
-    - name: build and push container
+    - name: build container
       run: |
         cd java
         docker buildx build --platform linux/amd64 -t java-sample .
         docker tag java-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
+
+    - name: push container
+      if: github.event_name != 'pull_request'
+      run: docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
