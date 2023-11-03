@@ -38,18 +38,21 @@ jobs:
         docker buildx build --platform linux/amd64 -t python-sample .
 
     - name: Configure AWS credentials
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ vars.AWS_CI_ROLE }}
         aws-region: ${{ vars.AWS_CI_REGION }}
     - name: Login to Amazon ECR
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
-
+      with:
+        registry-type: public
     - name: push container
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
+      env:
+        PUBLIC_ECR: "${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/python-sample"
       run: |
-        docker tag python-sample:latest ${{var.AWS_PUBLIC_ECR_HOST}}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/python-sample:latest
-        docker push ${{var.AWS_PUBLIC_ECR_HOST}}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/python-sample:latest
+        docker tag python-sample:latest $PUBLIC_ECR:latest
+        docker push  $PUBLIC_ECR:latest

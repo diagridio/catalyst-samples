@@ -37,20 +37,23 @@ jobs:
       run: |
         cd javascript
         docker buildx build --platform linux/amd64 -t javascript-sample .
-
+        with:
+          registry-type: public
     - name: Configure AWS credentials
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ vars.AWS_CI_ROLE }}
         aws-region: ${{ vars.AWS_CI_REGION }}
     - name: Login to Amazon ECR
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
     - name: push container
-      if: github.event_name != 'pull_request'
+      #if: github.event_name != 'pull_request'
+      env:
+        PUBLIC_ECR: "${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/javascript-sample"
       run: |
-        docker tag javascript-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/javascript-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/javascript-sample:latest
+        docker tag javascript-sample:latest  $PUBLIC_ECR:latest
+        docker push  $PUBLIC_ECR:latest
