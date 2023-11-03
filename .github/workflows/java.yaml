@@ -46,9 +46,12 @@ jobs:
       if: github.event_name != 'pull_request'
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
-
+      with:
+        registry-type: public
     - name: push container
       if: github.event_name != 'pull_request'
+      env:
+        PUBLIC_ECR: "${{ steps.login-ecr.outputs.registry }}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/java-sample"
       run: |
-        docker tag java-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/java-sample:latest
+        docker tag java-sample:latest  $PUBLIC_ECR:latest
+        docker push   $PUBLIC_ECR:latest
