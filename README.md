@@ -24,3 +24,5 @@ Cloud Tutorials
 * If you run into any issues with the Catayst samples, please open a bug report using the provided issue template.
 * To provide feedback on the associated tutorials or to suggest other product or doc improvements, visit the [Catalyst Feedback](https://github.com/diagridio/catalyst-feedback) repo.
 * Have questions for the Catalyst team? Unable to find something in the documentation? Reach out! ❓ [Help](https://github.com/diagridio/catalyst-feedback/discussions/categories/help)
+
+| external change
