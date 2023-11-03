@@ -80,13 +80,15 @@ async def send_order(order: Order):
         if result.ok:
             logging.info('Invocation successful with status code: %s' %
                          result.status_code)
+            return str(order)
         else:
             logging.error(
                 'Error occurred while invoking App ID: %s' % result.reason)
+            raise HTTPException(status_code=500, detail=result.reason)
 
-        return str(order)
     except grpc.RpcError as err:
         logging.error(f"ErrorCode={err.code()}")
+        raise HTTPException(status_code=500, detail=err.details())
 
 
 @app.post('/invoke/neworders')
