@@ -18,4 +18,3 @@ Cloud Tutorials
 
 * [Catalyst APIs + AWS](https://docs.diagrid.io/catalyst/cloud-tutorials/aws)
 * [Calalyst APIs + Azure](https://docs.diagrid.io/catalyst/cloud-tutorials/azure)
-
