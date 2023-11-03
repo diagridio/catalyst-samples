@@ -51,5 +51,5 @@ jobs:
     - name: push container
       if: github.event_name != 'pull_request'
       run: |
-        docker tag python-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/python-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/python-sample:latest
+        docker tag python-sample:latest ${{var.AWS_PUBLIC_ECR_HOST}}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/python-sample:latest
+        docker push ${{var.AWS_PUBLIC_ECR_HOST}}/${{ vars.AWS_PUBLIC_ECR_ALIAS }}/python-sample:latest
