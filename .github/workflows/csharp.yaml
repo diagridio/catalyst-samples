@@ -52,5 +52,5 @@ jobs:
     - name: push container
       #if: github.event_name != 'pull_request'
       run: |
-        docker tag csharp-sample:latest ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
-        docker push ${{ vars.AWS_PUBLIC_ECR_URL }}/csharp-sample:latest
+        docker tag csharp-sample:latest ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.AWS_PUBLIC_ECR_NAME }}/csharp-sample:latest
+        docker push ${{ steps.login-ecr-public.outputs.registry }}/${{ vars.AWS_PUBLIC_ECR_NAME }}/csharp-sample:latest
