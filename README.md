@@ -1,26 +1,26 @@
-# Diagrid Catalyst Samples
+<p align="center">
+  <img src="./images/catalyst-logo.svg"/>
+</p>
 
-This is the companion repository for the Diagrid Catalyst local and cloud tutorials.
-
-## Diagrid Catalyst
-
-Diagrid Catalyst provides a set of unified APIs designed for distributed application development. Visit [Catalyst documentation](https://docs.diagrid.io/catalyst) for more information.
+Diagrid Catalyst is a suite of unified APIs for messaging, data, and workflow. Catalyst frees developers from the fragmentation of code sprawl, infrastructure lock-in, and ever-increasing security vulnerabilities. To learn more and sign up for the Early Access preview, read the [docs](https://docs.diagrid.io/catalyst).
 
 ## Catalyst Samples
 
-Local Tutorials
+This is the companion repository for the Diagrid Catalyst local and cloud tutorials.
+
+### Local Tutorials
 
 * [Publish/Subscribe API](https://docs.diagrid.io/catalyst/local-tutorials/publish-subscribe)
 * [Request/Reply API](https://docs.diagrid.io/catalyst/local-tutorials/request-reply)
 * [Key/Value Management API](https://docs.diagrid.io/catalyst/local-tutorials/key-value)
 
-Cloud Tutorials
+### Cloud Tutorials
 
 * [Catalyst APIs + AWS](https://docs.diagrid.io/catalyst/cloud-tutorials/aws)
-* [Calalyst APIs + Azure](https://docs.diagrid.io/catalyst/cloud-tutorials/azure)
+* [Catalyst APIs + Azure](https://docs.diagrid.io/catalyst/cloud-tutorials/azure)
 
 ## Issues
 
-* If you run into any issues with the Catayst samples, please open a bug report using the provided issue template.
-* To provide feedback on the associated tutorials or to suggest other product or doc improvements, visit the [Catalyst Feedback](https://github.com/diagridio/catalyst-feedback) repo.
-* Have questions for the Catalyst team? Unable to find something in the documentation? Reach out! ❓ [Help](https://github.com/diagridio/catalyst-feedback/discussions/categories/help)
+* If you run into issues with the Catalyst samples, open a bug report using the provided [issue template](https://github.com/diagridio/catalyst-samples/issues/new?assignees=&labels=bug&projects=&template=bug_report.md&title=Bug+Report%3A+).
+* To provide feedback on the tutorials or to suggest other product or docs improvements, use the [Catalyst Feedback repo](https://github.com/diagridio/catalyst-feedback).
+* Have questions for the Catalyst team? Unable to find something in the documentation? Use the [Help discussion](https://github.com/diagridio/catalyst-feedback/discussions/categories/help).
