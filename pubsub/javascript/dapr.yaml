@@ -1,0 +1,11 @@
+version: 1
+common:
+  resourcesPath: ../components/
+apps:
+  - appID: subscriber
+    appDirPath: ./subscriber
+    appPort: 5002
+    command: ["npm", "run", "start"]
+  - appID: publisher
+    appDirPath: ./publisher
+    command: ["npm", "run", "start"]

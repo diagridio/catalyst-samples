@@ -1,0 +1,11 @@
+version: 1
+common:
+  resourcesPath: ../components/
+apps:
+  - appID: publisher
+    appDirPath: ./publisher
+    command: ["java", "-jar", "OrderProcessingService-0.0.1-SNAPSHOT.jar"]
+  - appID: subscriber
+    appDirPath: ./subscriber
+    appPort: 8080
+    command: ["java", "-jar", "CheckoutService-0.0.1-SNAPSHOT.jar"]
