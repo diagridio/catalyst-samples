@@ -410,6 +410,7 @@ FodyWeavers.xsd
 # Compiled class file
 *.class
 java/target
+pubsub/java/*/target
 
 # Log file
 

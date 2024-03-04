@@ -1,10 +1,10 @@
 package com.service.controller;
 
-import io.dapr.Topic;
 import io.dapr.client.domain.CloudEvent;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +32,7 @@ public class Controller {
             }
         });
     }
+}
 
 @Getter
 @Setter

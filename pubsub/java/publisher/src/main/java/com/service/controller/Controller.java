@@ -21,17 +21,12 @@ import javax.annotation.PostConstruct;
 public class Controller {
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
     private DaprClient client;
-    private HttpClient httpClient;
 
     private static final String PUBSUB_NAME = System.getenv().getOrDefault("PUBSUB_NAME", "pubsub");
 
     @PostConstruct
     public void init() {
         client = new DaprClientBuilder().build();
-        httpClient = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .connectTimeout(Duration.ofSeconds(10))
-                .build();
     }
 
     // Publish messages 
@@ -50,20 +45,7 @@ public class Controller {
             }
         });
     }
-
-    // Subscribe to messages
-    @PostMapping(path = "/pubsub/neworders", consumes = MediaType.ALL_VALUE)
-    public Mono<ResponseEntity> subscribe(@RequestBody(required = false) CloudEvent<Order> cloudEvent) {
-        return Mono.fromSupplier(() -> {
-            try {
-                int orderId = cloudEvent.getData().getOrderId();
-                logger.info("Order received: " + orderId);
-                return ResponseEntity.ok("SUCCESS");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+}
 
 @Getter
 @Setter
