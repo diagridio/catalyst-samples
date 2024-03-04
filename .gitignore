@@ -411,6 +411,7 @@ FodyWeavers.xsd
 *.class
 java/target
 pubsub/java/*/target
+state/java/*/target
 
 # Log file
 
