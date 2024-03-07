@@ -36,57 +36,57 @@ app.post('/pubsub/neworders', (req, res) => {
   res.sendStatus(200);
 });
 
-//#bulk pubsub
-// uncomment the following code and comment above code if bulk subscription is enabled
+// bulk pubsub
+app.post('/pubsub/bulk-orders', async function(req, res) {
+  let orders = req.body;
 
-// app.post('/pubsub/orders', async function(req, res) {
-//   let orders = req.body;
-//   let responseStatuses = [];
-// 
-//   for (let order of orders) {
-//     try {
-//       await client.pubsub.publish(pubSubName, "orders", order.event);
-//       console.log("Published data: " + order.entryId);
-// 
-//       responseStatuses.push({ entryId: order.entryId, status: "SUCCESS" });
-//     } catch (error) {
-//       console.log("Error publishing order: " + order.entryId);
-// 
-//       responseStatuses.push({ entryId: order.entryId, status: "RETRY" });
-//     }
-//   }
-// 
-//   res.json({ statuses: responseStatuses });
-// });
-// 
-// app.post('/pubsub/neworders', (req, res) => {
-//   const entries = req.body.entries;
-//   let responseStatuses = [];
-// 
-//   entries.forEach(entry => {
-//     const { entryId, event, contentType } = entry;
-// 
-//     try {
-//       if (contentType === 'application/cloudevents+json') {
-//         console.log("BulkSubcription event received with entryId:", entryId);
-// 
-//         if (event.data) {
-//           console.log("Received Data:", JSON.stringify(event.data));
-//         }
-//       } else {
-//         console.log("Received data of unhandled type:", contentType);
-//       }
-// 
-//       responseStatuses.push({ entryId: entryId, status: "SUCCESS" });
-//     } catch (error) {
-//       console.error("Error processing entry:", error);
-// 
-//       responseStatuses.push({ entryId: entryId, status: "RETRY" });
-//     }
-//   });
-// 
-//   res.json({ statuses: responseStatuses });
-// });
+  try {
+    const bulkPublishMsgs = orders.map(order => ({
+      entryID: order.entryId,
+      contentType: typeof order.event === 'string' ? "text/plain" : "application/json",
+      event: order.event
+    }));
+
+    await client.pubsub.publishBulk(pubSubName, "orders", bulkPublishMsgs);
+
+    const entryIdsString = bulkPublishMsgs.map(msg => msg.entryID).join(", ");
+    console.log(`Published orders with entry IDs: ${entryIdsString}`);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error publishing orders:", error);
+    res.status(500).send(error);
+  }
+});
+
+app.post('/pubsub/bulk-neworders', (req, res) => {
+  const entries = req.body.entries;
+  let responseStatuses = [];
+
+  entries.forEach(entry => {
+    const { entryId, event, contentType } = entry;
+
+    try {
+      if (contentType === 'application/cloudevents+json') {
+        console.log("BulkSubcription event received with entryId:", entryId);
+
+        if (event.data) {
+          console.log("Received Data:", JSON.stringify(event.data));
+        }
+      } else {
+        console.log("Received data of unhandled type:", contentType);
+      }
+
+      responseStatuses.push({ entryId: entryId, status: "SUCCESS" });
+    } catch (error) {
+      console.error("Error processing entry:", error);
+
+      responseStatuses.push({ entryId: entryId, status: "RETRY" });
+    }
+  });
+
+  res.json({ statuses: responseStatuses });
+});
 
 //#endregion
 
