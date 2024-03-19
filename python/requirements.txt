@@ -6,3 +6,6 @@ pydantic==2.4.2
 requests==2.31.0
 uvicorn==0.23.2
 aiohttp==3.9.0b0
+opentelemetry-sdk
+opentelemetry-instrumentation-grpc
+opentelemetry-instrumentation-fastapi
