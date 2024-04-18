@@ -1,33 +1,34 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import axios from "axios";
-import { DaprClient, CommunicationProtocolEnum} from "@dapr/dapr";
+import { DaprClient, CommunicationProtocolEnum } from "@dapr/dapr";
 
 const daprApiToken = process.env.DAPR_API_TOKEN || "";
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT || "http://localhost";
-const appPort = process.env.PORT || 5001; 
-const pubSubName = process.env.PUBSUB_NAME || "pubsub"; 
-const kvName = process.env.KVSTORE_NAME || "kvstore"; 
-const invokeTargetAppID = process.env.INVOKE_APPID || "target"; 
+const appPort = process.env.PORT || 5001;
+const pubSubName = process.env.PUBSUB_NAME || "pubsub";
+const kvName = process.env.KVSTORE_NAME || "kvstore";
+const invokeTargetAppID = process.env.INVOKE_APPID || "target";
 
 const app = express()
 
-const client = new DaprClient({daprApiToken: daprApiToken, communicationProtocol: CommunicationProtocolEnum.HTTP});
+const client = new DaprClient({ daprApiToken: daprApiToken, communicationProtocol: CommunicationProtocolEnum.HTTP });
 
-app.use(bodyParser.json({ type: '*/*' })) 
+app.use(bodyParser.json({ type: '*/*' }))
 
 //#region Pub/Sub API
 
-app.post('/pubsub/orders', async function (req, res) {
-    let order = req.body
-    try {
-      await client.pubsub.publish(pubSubName, "orders", order);
-      console.log("Published data: " + order.orderId);
-      res.sendStatus(200);
-    } catch (error){
-      console.log("Error publishing order: " + order.orderId);
-      res.status(500).send(error);
-    }
+//#standard pubsub
+app.post('/pubsub/orders', async function(req, res) {
+  let order = req.body
+  try {
+    await client.pubsub.publish(pubSubName, "orders", order);
+    console.log("Published data: " + order.orderId);
+    res.sendStatus(200);
+  } catch (error) {
+    console.log("Error publishing order: " + order.orderId);
+    res.status(500).send(error);
+  }
 });
 
 app.post('/pubsub/neworders', (req, res) => {
@@ -35,24 +36,77 @@ app.post('/pubsub/neworders', (req, res) => {
   res.sendStatus(200);
 });
 
+// bulk pubsub
+app.post('/pubsub/bulk-orders', async function(req, res) {
+  let orders = req.body;
+
+  try {
+    const bulkPublishMsgs = orders.map(order => ({
+      entryID: order.entryId,
+      contentType: typeof order.event === 'string' ? "text/plain" : "application/json",
+      event: order.event
+    }));
+
+    await client.pubsub.publishBulk(pubSubName, "orders", bulkPublishMsgs);
+
+    const entryIdsString = bulkPublishMsgs.map(msg => msg.entryID).join(", ");
+    console.log(`Published orders with entry IDs: ${entryIdsString}`);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error publishing orders:", error);
+    res.status(500).send(error);
+  }
+});
+
+app.post('/pubsub/bulk-neworders', (req, res) => {
+  const entries = req.body.entries;
+  let responseStatuses = [];
+
+  entries.forEach(entry => {
+    const { entryId, event, contentType } = entry;
+
+    try {
+      if (contentType === 'application/cloudevents+json') {
+        console.log("BulkSubcription event received with entryId:", entryId);
+
+        if (event.data) {
+          console.log("Received Data:", JSON.stringify(event.data));
+        }
+      } else {
+        console.log("Received data of unhandled type:", contentType);
+      }
+
+      responseStatuses.push({ entryId: entryId, status: "SUCCESS" });
+    } catch (error) {
+      console.error("Error processing entry:", error);
+
+      responseStatuses.push({ entryId: entryId, status: "RETRY" });
+    }
+  });
+
+  res.json({ statuses: responseStatuses });
+});
+
 //#endregion
+
 
 //#region Request/Reply API 
 
-app.post('/invoke/orders', async function (req, res) {
+app.post('/invoke/orders', async function(req, res) {
   let config = {
     headers: {
-        "dapr-app-id": invokeTargetAppID,
-        "dapr-api-token": daprApiToken
+      "dapr-app-id": invokeTargetAppID,
+      "dapr-api-token": daprApiToken
     }
   };
   let order = req.body
-  
+
   try {
     await axios.post(`${daprHttpEndpoint}/invoke/neworders`, order, config);
     console.log("Invocation successful with status code: %d ", res.statusCode);
     res.sendStatus(200);
-  } catch (error){
+  } catch (error) {
     console.log("Error invoking app at " + `${daprHttpEndpoint}/invoke/neworders`);
     res.status(500).send(error);
   }
@@ -68,7 +122,7 @@ app.post('/invoke/neworders', (req, res) => {
 
 //#region Key/Value API
 
-app.post('/kv/orders', async function (req, res) {
+app.post('/kv/orders', async function(req, res) {
   req.accepts('application/json')
 
   const keyName = "order" + req.body.orderId
@@ -88,7 +142,7 @@ app.post('/kv/orders', async function (req, res) {
   }
 });
 
-app.get('/kv/orders/:orderId', async function (req, res) {
+app.get('/kv/orders/:orderId', async function(req, res) {
   const keyName = "order" + req.params.orderId
   try {
     const order = await client.state.get(kvName, keyName)
@@ -100,7 +154,7 @@ app.get('/kv/orders/:orderId', async function (req, res) {
   }
 });
 
-app.delete('/kv/orders/:orderId', async function (req, res) {
+app.delete('/kv/orders/:orderId', async function(req, res) {
   const keyName = "order" + req.params.orderId
   try {
     await client.state.delete(kvName, keyName)
