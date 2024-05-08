@@ -5,7 +5,6 @@ import { DaprClient, CommunicationProtocolEnum} from "@dapr/dapr";
 
 const daprApiToken = process.env.DAPR_API_TOKEN || "";
 const daprHttpEndpoint = process.env.DAPR_HTTP_ENDPOINT || "http://localhost";
-const appPort = process.env.PORT || 5001; 
 const pubSubName = process.env.PUBSUB_NAME || "pubsub"; 
 const kvName = process.env.KVSTORE_NAME || "kvstore"; 
 const invokeTargetAppID = process.env.INVOKE_APPID || "target"; 
@@ -15,6 +14,17 @@ const app = express()
 const client = new DaprClient({daprApiToken: daprApiToken, communicationProtocol: CommunicationProtocolEnum.HTTP});
 
 app.use(bodyParser.json({ type: '*/*' })) 
+
+// Check if process.env.PORT is set
+let appPort;
+if (process.env.PORT) {
+  appPort = parseInt(process.env.PORT);
+} else {
+  appPort = 5003
+  console.warn("Warning: PORT environment variable not set for app. Defaulting to port", appPort);
+  console.warn("Note: Using the default port for multiple apps will cause port conflicts.")
+  // TODO: we could add a check if port is available, otherwise use a random port...
+}
 
 //#region Pub/Sub API
 
@@ -113,6 +123,5 @@ app.delete('/kv/orders/:orderId', async function (req, res) {
 });
 
 //#endregion
-
 
 app.listen(appPort, () => console.log(`server listening at :${appPort}`));
