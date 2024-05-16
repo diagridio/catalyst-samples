@@ -8,7 +8,6 @@ Content-Type: application/json
 }
 
 ### Request/Reply API 
-
 POST http://localhost:5001/invoke/orders
 Content-Type: application/json
 
@@ -19,7 +18,6 @@ Content-Type: application/json
 ### Key/Value API 
 
 ### Save KV 
-
 POST http://localhost:5001/kv/orders
 Content-Type: application/json
 
@@ -28,9 +26,23 @@ Content-Type: application/json
 }
 
 ### Get KV 
-
 GET http://localhost:5001/kv/orders/1
 
 ### Delete KV 
-
 DELETE http://localhost:5001/kv/orders/1
+
+### Start workflow
+// @name wfrequest
+POST http://localhost:5001/workflow/start
+Content-Type: application/json
+
+{
+    "input": "World"
+}
+
+### Get workflow status
+@workflow_id_response={{wfrequest.response.body.$}}
+GET http://localhost:5001/workflow/status/{{workflow_id_response}}
+
+### Get workflow output
+GET http://localhost:5001/workflow/output/{{workflow_id_response}}
