@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM amazoncorretto:11-alpine
 EXPOSE 5001
 ENV PORT 5001
 VOLUME /tmp
