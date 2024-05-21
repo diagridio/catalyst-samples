@@ -35,6 +35,15 @@ jobs:
       run: |
         cd csharp
         docker buildx build --platform linux/amd64 -t csharp-sample .
+    - name: check container vulnerabilities
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'csharp-sample'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
 
     - name: Configure AWS credentials
       if: github.event_name != 'pull_request'
@@ -48,7 +57,6 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
       with:
         registry-type: public
-
     - name: push container
       if: github.event_name != 'pull_request'
       env:

@@ -36,6 +36,15 @@ jobs:
       run: |
         cd python
         docker buildx build --platform linux/amd64 -t python-sample .
+    - name: check container vulnerabilities
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: 'python-sample'
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: true
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
 
     - name: Configure AWS credentials
       if: github.event_name != 'pull_request'
