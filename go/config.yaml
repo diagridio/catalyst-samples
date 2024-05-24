@@ -1,0 +1,15 @@
+http:
+  port: "9002"
+
+log:
+  level: "debug"
+
+pubsub:
+  name: "pubsub"
+  topic: "orders"
+
+statestore:
+  name: "kvstore"
+
+dapr:
+  port: "9003"
